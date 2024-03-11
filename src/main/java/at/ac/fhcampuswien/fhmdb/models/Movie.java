@@ -23,7 +23,16 @@ public class Movie {
         return description;
     }
 
-    public List<Genre> getGenres(){ return genres;}
+    public String getGenres(){
+        StringBuilder genreList = new StringBuilder();
+        for (int i = 0; i < genres.size(); i++) {
+            genreList.append(genres.get(i));
+            if ((i + 1) < genres.size()) {
+                genreList.append(", ");
+            }
+        }
+        return genreList.toString();
+    }
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         // TODO add some dummy data here
