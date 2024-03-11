@@ -23,7 +23,7 @@ public class Movie {
         return description;
     }
 
-    public String getGenres(){
+    public String getGenresString(){
         StringBuilder genreList = new StringBuilder();
         for (int i = 0; i < genres.size(); i++) {
             genreList.append(genres.get(i));
@@ -33,6 +33,11 @@ public class Movie {
         }
         return genreList.toString();
     }
+
+    public List<Genre> getGenres(){
+        return genres;
+    }
+
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
 
