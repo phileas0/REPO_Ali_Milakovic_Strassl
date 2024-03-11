@@ -26,7 +26,6 @@ public class Movie {
     public List<Genre> getGenres(){ return genres;}
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
-        // TODO add some dummy data here
 
         movies.add(new Movie ("Poor Things","Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE)));
         movies.add(new Movie ("Interstellar","\"Interstellar\" erzählt die Geschichte eines Astronautenteams, das durch ein Wurmloch reist, um neue bewohnbare Welten zu finden und die Menschheit zu retten, die auf der sterbenden Erde ums Überleben kämpft.",Arrays.asList(Genre.SCIENCE_FICTION, Genre.DRAMA, Genre.ADVENTURE, Genre.MYSTERY)));
