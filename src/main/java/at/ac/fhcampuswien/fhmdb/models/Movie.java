@@ -35,9 +35,13 @@ public class Movie {
     }
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
-        // TODO add some dummy data here
 
         movies.add(new Movie ("Poor Things","Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE)));
+        movies.add(new Movie ("Interstellar","\"Interstellar\" erzählt die Geschichte eines Astronautenteams, das durch ein Wurmloch reist, um neue bewohnbare Welten zu finden und die Menschheit zu retten, die auf der sterbenden Erde ums Überleben kämpft.",Arrays.asList(Genre.SCIENCE_FICTION, Genre.DRAMA, Genre.ADVENTURE, Genre.MYSTERY)));
+        movies.add(new Movie ("Spiderman: Into the Spider-Verse", "In \"Spider-Man: Into the Spider-Verse\" entdeckt der Teenager Miles Morales seine Kräfte als Spider-Man und trifft auf andere Spider-People aus verschiedenen Dimensionen, um eine Bedrohung zu bekämpfen, die das gesamte Multiversum gefährdet.",Arrays.asList(Genre.ANIMATION, Genre.ACTION, Genre.ADVENTURE, Genre.SCIENCE_FICTION)));
+        movies.add(new Movie ("Spiderman: Across The Spider-Verse","In \"Spider-Man: Across the Spider-Verse\" verbündet sich Miles Morales mit Spider-People aus anderen Dimensionen, um gegen eine Bedrohung zu kämpfen, die alle Realitäten des Multiversums gefährdet.",Arrays.asList(Genre.ANIMATION, Genre.ACTION, Genre.ADVENTURE, Genre.SCIENCE_FICTION)));
+        movies.add(new Movie ("Inception", "\"Inception\" dreht sich um einen Dieb, der die Fähigkeit besitzt, in die Träume anderer Menschen einzudringen, um Ideen zu stehlen oder zu implantieren, und der einen letzten Auftrag annimmt, der ihm seine verlorene Lebensqualität zurückgeben könnte, indem er eine nahezu unmögliche \"Inception\" durchführt.",Arrays.asList(Genre.SCIENCE_FICTION,Genre.ACTION, Genre.ADVENTURE)));
+        movies.add(new Movie ("Oppenheimer", "\"Oppenheimer\" erzählt die Geschichte von J. Robert Oppenheimer, dem theoretischen Physiker, der als einer der Väter der Atombombe gilt, und beleuchtet seine Rolle im Manhattan-Projekt sowie die ethischen und moralischen Dilemmata, mit denen er sich im Zuge der Entwicklung der Waffe konfrontiert sieht.", Arrays.asList(Genre.HISTORY, Genre.BIOGRAPHY, Genre.THRILLER)));
         movies.add(new Movie ("Pulp Fiction","The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.", Arrays.asList(Genre.COMEDY, Genre.ADVENTURE, Genre.CRIME, Genre.THRILLER)));
         movies.add(new Movie ("No Country For Old Men","When a man stumbles upon a drug deal gone wrong and a case full of money, he sets off a chain of events that leads to relentless pursuit by a ruthless killer.", Arrays.asList(Genre.THRILLER, Genre.WESTERN, Genre.ACTION, Genre.CRIME)));
         movies.add(new Movie ("Inglourious Basterds","The film tells the fictional alternate history tale of the unwitting convergence of two independent plots to assassinate Nazi Germany's political leadership.", Arrays.asList(Genre.HISTORY, Genre.COMEDY, Genre.WAR, Genre.ACTION)));
@@ -46,6 +50,7 @@ public class Movie {
         movies.add(new Movie ("The SpongeBob SquarePants Movie","SpongeBob takes leave from Bikini Bottom in order to track down, with Patrick, King Neptune's stolen crown.", Arrays.asList(Genre.ANIMATION, Genre.ADVENTURE, Genre.COMEDY, Genre.FAMILY)));
         movies.add(new Movie ("John Wick","A retired assassin who returns back to his old ways after a group of Russian gangsters steal his car and kill his puppy.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
         movies.add(new Movie ("Nobody","A mild-mannered family man who returns to his former life of an assassin after he and his family become the target of a vengeful crime lord.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
+
         return movies;
     }
 }
