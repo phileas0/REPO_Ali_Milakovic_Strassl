@@ -13,7 +13,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
@@ -66,27 +68,39 @@ public class HomeController implements Initializable {
     }
 
     private void movieFilter() {
+        // Den Suchbegriff aus dem Textfeld auslesen und in Kleinbuchstaben umwandeln.
         String query = searchField.getText().trim().toLowerCase();
-        String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
-        Genre selectedGenre = null;
 
+        // Den Namen des ausgewählten Genres aus der ComboBox auslesen und in ein Genre-Objekt umwandeln.
+        Genre selectedGenre = null;
+        String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
         if (selectedGenreName != null) {
             try {
                 selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
             } catch (IllegalArgumentException e) {
-                // Handle the case where the genre is not found
+                // Fehlerbehandlung, falls das Genre nicht gefunden wird.
             }
         }
 
-        Genre finalSelectedGenre = selectedGenre;
-        List<Movie> filtered = allMovies.stream()
-                .filter(movie -> query.isEmpty() || movie.getTitle().toLowerCase().contains(query) || movie.getDescription().toLowerCase().contains(query))
-                .filter(movie -> finalSelectedGenre == null || movie.getGenres().contains(finalSelectedGenre))
-                .collect(Collectors.toList());
+        // Vorhandene Filme in observableMovies löschen.
+        observableMovies.clear();
 
-        observableMovies.setAll(filtered); // Aktualisiere die Liste der Filme in der UI
-        movieListView.setItems(observableMovies);
+        // Durchlaufen aller Filme und Prüfen der Filterkriterien.
+        for (Movie movie : allMovies) {
+            boolean matchesQuery = query.isEmpty() ||
+                    movie.getTitle().toLowerCase().contains(query) ||
+                    movie.getDescription().toLowerCase().contains(query);
+
+            boolean matchesGenre = selectedGenre == null ||
+                    movie.getGenres().contains(selectedGenre);
+
+            // Wenn ein Film beiden Kriterien entspricht, wird er der observableMovies-Liste hinzugefügt.
+            if (matchesQuery && matchesGenre) {
+                observableMovies.add(movie);
+            }
+        }
+
+        // Die ListView aktualisieren.
         movieListView.refresh();
-
     }
 }

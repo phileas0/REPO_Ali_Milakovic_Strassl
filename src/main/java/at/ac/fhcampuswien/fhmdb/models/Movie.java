@@ -40,8 +40,13 @@ public class Movie {
 
     public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
+        // TODO add some dummy data here
 
         movies.add(new Movie ("Poor Things","Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE)));
+        movies.add(new Movie ("Forrest Gump", "Forrest Gump is a film about the extraordinary life of a simple man who, through chance encounters and a sincere approach to life, achieves unexpected fame. Along the way, he experiences significant historical events and learns the importance of love, friendship, and self-determination.", Arrays.asList(Genre.WAR, Genre.ROMANCE, Genre.FANTASY, Genre.ADVENTURE, Genre.COMEDY)));
+        movies.add(new Movie ("Dune: Part One", "The first of part Dune directed by Dennis Villeneuve, depicts a young nobleman's journey on a desert planet as he becomes entangled in political intrigue and the mystical powers of an ancient prophecy.", Arrays.asList(Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE, Genre.WAR, Genre.SCIENCE_FICTION, Genre.DRAMA)));
+        movies.add(new Movie ("The Godfather",  "The Godfather Part I follows the rise of Michael Corleone within a powerful Mafia family, navigating a world of crime, loyalty, and betrayal amidst the backdrop of 1940s New York.", Arrays.asList(Genre.CRIME, Genre.DRAMA)));
+        movies.add(new Movie ("Midsommar", "Midsommar, directed by Ari Aster, explores a group of friends' journey to a remote Swedish village to partake in a festival, unraveling a disturbing and surreal descent into pagan rituals and psychological horror.", Arrays.asList(Genre.HORROR, Genre.FANTASY, Genre.THRILLER, Genre.MYSTERY, Genre.DOCUMENTARY)));
         movies.add(new Movie ("Interstellar","\"Interstellar\" erzählt die Geschichte eines Astronautenteams, das durch ein Wurmloch reist, um neue bewohnbare Welten zu finden und die Menschheit zu retten, die auf der sterbenden Erde ums Überleben kämpft.",Arrays.asList(Genre.SCIENCE_FICTION, Genre.DRAMA, Genre.ADVENTURE, Genre.MYSTERY)));
         movies.add(new Movie ("Spiderman: Into the Spider-Verse", "In \"Spider-Man: Into the Spider-Verse\" entdeckt der Teenager Miles Morales seine Kräfte als Spider-Man und trifft auf andere Spider-People aus verschiedenen Dimensionen, um eine Bedrohung zu bekämpfen, die das gesamte Multiversum gefährdet.",Arrays.asList(Genre.ANIMATION, Genre.ACTION, Genre.ADVENTURE, Genre.SCIENCE_FICTION)));
         movies.add(new Movie ("Spiderman: Across The Spider-Verse","In \"Spider-Man: Across the Spider-Verse\" verbündet sich Miles Morales mit Spider-People aus anderen Dimensionen, um gegen eine Bedrohung zu kämpfen, die alle Realitäten des Multiversums gefährdet.",Arrays.asList(Genre.ANIMATION, Genre.ACTION, Genre.ADVENTURE, Genre.SCIENCE_FICTION)));
@@ -55,6 +60,7 @@ public class Movie {
         movies.add(new Movie ("The SpongeBob SquarePants Movie","SpongeBob takes leave from Bikini Bottom in order to track down, with Patrick, King Neptune's stolen crown.", Arrays.asList(Genre.ANIMATION, Genre.ADVENTURE, Genre.COMEDY, Genre.FAMILY)));
         movies.add(new Movie ("John Wick","A retired assassin who returns back to his old ways after a group of Russian gangsters steal his car and kill his puppy.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
         movies.add(new Movie ("Nobody","A mild-mannered family man who returns to his former life of an assassin after he and his family become the target of a vengeful crime lord.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
+
 
         return movies;
     }
