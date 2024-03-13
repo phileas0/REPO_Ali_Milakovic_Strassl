@@ -13,10 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
@@ -37,7 +34,7 @@ public class HomeController implements Initializable {
 
     public List<Movie> allMovies = Movie.initializeMovies();
 
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
+    final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,7 +50,7 @@ public class HomeController implements Initializable {
         genreComboBox.getSelectionModel().select("ALL MOVIES");
 
         // either set event handlers in the fxml file (onAction) or add them here
-        searchBtn.setOnAction(actionEvent -> movieFilter());
+        searchBtn.setOnAction(actionEvent -> applyFilterAndDisplayResults());
 
         // Sort button example:
         sortBtn.setOnAction(actionEvent -> {
@@ -68,30 +65,12 @@ public class HomeController implements Initializable {
         });
     }
 
-    private void movieFilter() {
-        // Den Suchbegriff aus dem Textfeld auslesen und in Kleinbuchstaben umwandeln.
-        String query = searchField.getText().trim().toLowerCase();
+    public List<Movie> movieFilter(String query, Genre selectedGenre) {
+        query = query.trim().toLowerCase();
 
-        // Den Namen des ausgewählten Genres aus der ComboBox auslesen und in ein Genre-Objekt umwandeln.
-        Genre selectedGenre = null;
-        String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
+        // Bereite die Liste für gefilterte Filme vor
+        List<Movie> filteredMovies = new ArrayList<>();
 
-        if ("ALL MOVIES".equals(selectedGenreName)) {
-            observableMovies.setAll(allMovies);
-        } else {
-            if (selectedGenreName != null) {
-                try {
-                    selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    // Fehlerbehandlung, falls das Genre nicht gefunden wird.
-                }
-            }
-        }
-
-        // Vorhandene Filme in observableMovies löschen.
-        observableMovies.clear();
-
-        // Durchlaufen aller Filme und Prüfen der Filterkriterien.
         for (Movie movie : allMovies) {
             boolean matchesQuery = query.isEmpty() ||
                     movie.getTitle().toLowerCase().contains(query) ||
@@ -100,13 +79,30 @@ public class HomeController implements Initializable {
             boolean matchesGenre = selectedGenre == null ||
                     movie.getGenres().contains(selectedGenre);
 
-            // Wenn ein Film beiden Kriterien entspricht, wird er der observableMovies-Liste hinzugefügt.
             if (matchesQuery && matchesGenre) {
-                observableMovies.add(movie);
+                filteredMovies.add(movie);
             }
         }
-        // Die ListView aktualisieren.
-        movieListView.refresh();
+
+        return filteredMovies;
+    }
+
+    public void applyFilterAndDisplayResults() {
+        String query = searchField.getText().trim().toLowerCase(); // Lese den Suchbegriff aus der UI
+        Genre selectedGenre = null; // Initialisiere selectedGenre
+        String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
+
+        if (!"ALL MOVIES".equals(selectedGenreName)) {
+            try {
+                selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Fehlerbehandlung, falls das Genre nicht gefunden wird
+            }
+        }
+
+        List<Movie> filteredMovies = movieFilter(query, selectedGenre);
+        observableMovies.setAll(filteredMovies); // Aktualisiere observableMovies mit den gefilterten Filmen
+        movieListView.refresh(); // Aktualisiere die ListView
     }
 
     private void ascending() {
