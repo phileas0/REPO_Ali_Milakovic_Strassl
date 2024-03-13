@@ -26,7 +26,10 @@ public class Movie {
     public String getGenresString() {
         StringBuilder genreList = new StringBuilder();
         for (int i = 0; i < genres.size(); i++) {
-            genreList.append(genres.get(i));
+            if (genres.get(i) == Genre.SCIENCE_FICTION) {
+                genreList.append("SCIENCE FICTION");
+            }
+            else genreList.append(genres.get(i));
             if ((i + 1) < genres.size()) {
                 genreList.append(", ");
             }
