@@ -59,11 +59,14 @@ public class HomeController implements Initializable {
         sortBtn.setOnAction(actionEvent -> {
             if (sortBtn.getText().equals("Sort (asc)")) {
                 // TODO sort observableMovies ascending
+                descending();
                 sortBtn.setText("Sort (desc)");
             } else {
                 // TODO sort observableMovies descending
+                ascending();
                 sortBtn.setText("Sort (asc)");
             }
+            movieListView.refresh();
         });
     }
 
@@ -103,4 +106,14 @@ public class HomeController implements Initializable {
         // Die ListView aktualisieren.
         movieListView.refresh();
     }
+
+    private void ascending(){
+        FXCollections.sort(observableMovies, (movie1, movie2) -> movie1.getTitle().compareToIgnoreCase(movie2.getTitle()));
+    }
+
+    private void descending(){
+        FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
+    }
+
+
 }
