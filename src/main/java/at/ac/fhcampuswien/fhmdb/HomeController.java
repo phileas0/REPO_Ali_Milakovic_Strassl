@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -46,23 +47,20 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
-        // TODO add genre filter items with genreComboBox.getItems().addAll(...)
-        genreComboBox.setPromptText("Filter by Genre");
+        //genreComboBox.setPromptText("ALL MOVIES");
+        genreComboBox.getItems().add("ALL MOVIES");
         genreComboBox.getItems().addAll(Arrays.stream(Genre.values()).map(Enum::name).collect(Collectors.toList()));
+        genreComboBox.getSelectionModel().select("ALL MOVIES");
 
-        // TODO add event handlers to buttons and call the regarding methods
         // either set event handlers in the fxml file (onAction) or add them here
         searchBtn.setOnAction(actionEvent -> movieFilter());
-        //genreComboBox.setOnAction(actionEvent -> movieFilter());
 
         // Sort button example:
         sortBtn.setOnAction(actionEvent -> {
             if (sortBtn.getText().equals("Sort (asc)")) {
-                // TODO sort observableMovies ascending
                 descending();
                 sortBtn.setText("Sort (desc)");
             } else {
-                // TODO sort observableMovies descending
                 ascending();
                 sortBtn.setText("Sort (asc)");
             }
@@ -77,11 +75,16 @@ public class HomeController implements Initializable {
         // Den Namen des ausgewählten Genres aus der ComboBox auslesen und in ein Genre-Objekt umwandeln.
         Genre selectedGenre = null;
         String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
-        if (selectedGenreName != null) {
-            try {
-                selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                // Fehlerbehandlung, falls das Genre nicht gefunden wird.
+
+        if ("ALL MOVIES".equals(selectedGenreName)) {
+            observableMovies.setAll(allMovies);
+        } else {
+            if (selectedGenreName != null) {
+                try {
+                    selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    // Fehlerbehandlung, falls das Genre nicht gefunden wird.
+                }
             }
         }
 
@@ -102,18 +105,15 @@ public class HomeController implements Initializable {
                 observableMovies.add(movie);
             }
         }
-
         // Die ListView aktualisieren.
         movieListView.refresh();
     }
 
-    private void ascending(){
+    private void ascending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie1.getTitle().compareToIgnoreCase(movie2.getTitle()));
     }
 
-    private void descending(){
+    private void descending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
     }
-
-
 }
