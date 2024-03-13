@@ -62,6 +62,7 @@ public class Movie {
         movies.add(new Movie("The SpongeBob SquarePants Movie", "SpongeBob takes leave from Bikini Bottom in order to track down, with Patrick, King Neptune's stolen crown.", Arrays.asList(Genre.ANIMATION, Genre.ADVENTURE, Genre.COMEDY, Genre.FAMILY)));
         movies.add(new Movie("John Wick", "A retired assassin who returns back to his old ways after a group of Russian gangsters steal his car and kill his puppy.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
         movies.add(new Movie("Nobody", "A mild-mannered family man who returns to his former life of an assassin after he and his family become the target of a vengeful crime lord.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY)));
+        movies.add(new Movie("Poor Things", "Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE)));
 
         return movies;
     }

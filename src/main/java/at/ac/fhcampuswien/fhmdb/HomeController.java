@@ -47,7 +47,7 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);   // set data of observable list to list view
         movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
 
-        //genreComboBox.setPromptText("ALL MOVIES");
+        genreComboBox.setPromptText("Select Genre");
         genreComboBox.getItems().add("ALL MOVIES");
         genreComboBox.getItems().addAll(Arrays.stream(Genre.values()).map(Enum::name).collect(Collectors.toList()));
         genreComboBox.getSelectionModel().select("ALL MOVIES");
@@ -116,11 +116,11 @@ public class HomeController implements Initializable {
         movieListView.refresh(); // Aktualisiere die ListView
     }
 
-    private void ascending() {
+    public void ascending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie1.getTitle().compareToIgnoreCase(movie2.getTitle()));
     }
 
-    private void descending() {
+    public void descending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
     }
 }
