@@ -123,4 +123,9 @@ public class HomeController implements Initializable {
     public void descending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
     }
+
+    public int getLongestMovieTitle(List<Movie> movies) {
+        return movies.stream().mapToInt(movie -> movie.getTitle().length()).max().orElse(0);
+    }
+
 }

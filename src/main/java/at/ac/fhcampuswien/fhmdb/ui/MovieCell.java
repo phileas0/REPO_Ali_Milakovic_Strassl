@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
-import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -14,6 +13,8 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
+    private final Label releaseYear = new Label();
+    private final Label rating = new Label();
     private final VBox layout = new VBox(title, detail, genre);
 
     @Override
@@ -33,11 +34,16 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText(movie.getGenresString());
+            //releaseYear.setText(movie.getStringReleaseYear());
+            rating.setText(movie.getRatingFrom());
+
 
             // color scheme
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-white");
+            //releaseYear.getStyleClass().add("text-white");
+            rating.getStyleClass().add("text-cyan");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
@@ -47,6 +53,9 @@ public class MovieCell extends ListCell<Movie> {
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+            if (!layout.getChildren().contains(rating)) {
+                layout.getChildren().addAll(rating);
+            }
             setGraphic(layout);
         }
     }
