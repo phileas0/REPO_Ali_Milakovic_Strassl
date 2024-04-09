@@ -75,13 +75,13 @@ class HomeControllerTest {
 
     @Test
     void test_Filter_By_Description_Returns_True_If_Description_Contains_Query() {
-        String query = "desert planet";
+        String query = "Marine dispatched";
         Genre selectedGenre = null;
         List<Movie> result = homeController.movieFilter(query.toLowerCase(), selectedGenre);
 
         assertTrue(result.stream().anyMatch(movie ->
                         movie.getDescription().toLowerCase().contains(query)),
-                "Mindestens ein Film sollte 'desert planet' in der Beschreibung enthalten.");
+                "Mindestens ein Film sollte 'Marine dispatched' in der Beschreibung enthalten.");
     }
 
     @Test

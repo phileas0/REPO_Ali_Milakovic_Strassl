@@ -31,7 +31,6 @@ public class HomeController implements Initializable {
 
     @FXML
     private JFXListView<Movie> movieListView;
-    private MovieAPI movieApiService = new MovieAPI();
     @FXML
     public JFXComboBox genreComboBox;
 
@@ -73,17 +72,22 @@ public class HomeController implements Initializable {
         });
     }
 
+
     private void loadMovies() {
         Platform.runLater(() -> {
-            observableMovies.setAll(MovieAPI.fetchAllMovies());
+            observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
         });
     }
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void applyFilterAndDisplayResults() {
+        String query = searchField.getText().trim();
+        String selectedGenreName = genreComboBox.getSelectionModel().getSelectedItem().toString();
+        Genre genre = "ALL MOVIES".equals(selectedGenreName) ? null : Genre.valueOf(selectedGenreName);
+
+        List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, null, null); // Lädt gefilterte Filme
+        //movieFilter(query, genre);
+        Platform.runLater(() -> {
+            observableMovies.setAll(filteredMovies);
+        });
     }
 
     public List<Movie> movieFilter(String query, Genre selectedGenre) {
@@ -95,7 +99,7 @@ public class HomeController implements Initializable {
         for (Movie movie : allMovies) {
             boolean matchesQuery = query.isEmpty() ||
                     movie.getTitle().toLowerCase().contains(query) ||
-                    movie.getDescription().toLowerCase().contains(query);
+                    movie.getDescription().trim().toLowerCase().contains(query.trim().toLowerCase());
 
             boolean matchesGenre = selectedGenre == null ||
                     movie.getGenres().contains(selectedGenre);
@@ -108,23 +112,6 @@ public class HomeController implements Initializable {
         return filteredMovies;
     }
 
-    public void applyFilterAndDisplayResults() {
-        String query = searchField.getText().trim().toLowerCase(); // Lese den Suchbegriff aus der UI
-        Genre selectedGenre = null; // Initialisiere selectedGenre
-        String selectedGenreName = (String) genreComboBox.getSelectionModel().getSelectedItem();
-
-        if (!"ALL MOVIES".equals(selectedGenreName)) {
-            try {
-                selectedGenre = Genre.valueOf(selectedGenreName.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                // Fehlerbehandlung, falls das Genre nicht gefunden wird
-            }
-        }
-
-        List<Movie> filteredMovies = movieFilter(query, selectedGenre);
-        observableMovies.setAll(filteredMovies); // Aktualisiere observableMovies mit den gefilterten Filmen
-        movieListView.refresh(); // Aktualisiere die ListView
-    }
 
     public void ascending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie1.getTitle().compareToIgnoreCase(movie2.getTitle()));
@@ -134,8 +121,5 @@ public class HomeController implements Initializable {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
     }
 
-    public int getLongestMovieTitle(List<Movie> movies) {
-        return movies.stream().mapToInt(movie -> movie.getTitle().length()).max().orElse(0);
-    }
 
 }
