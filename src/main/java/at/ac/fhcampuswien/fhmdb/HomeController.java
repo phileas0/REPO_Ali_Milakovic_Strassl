@@ -48,11 +48,6 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        genreComboBox.getSelectionModel().select("ALL MOVIES");
-
-        releaseYearComboBox.getSelectionModel().select("ALL YEARS");
-
-        ratingComboBox.getSelectionModel().select("ALL RATINGS");
 
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
@@ -113,33 +108,55 @@ public class HomeController implements Initializable {
         // Populate ComboBoxes
         Platform.runLater(() -> {
             genreComboBox.getItems().clear();
+            genreComboBox.getItems().add("ALL GENRES");
             genreComboBox.getItems().addAll(sortedGenres);
-            genreComboBox.setPromptText("Filter by genre");
+            genreComboBox.getSelectionModel().selectFirst(); // Select "ALL GENRES" by default
 
             releaseYearComboBox.getItems().clear();
-            releaseYearComboBox.getItems().addAll(sortedYears);
-            genreComboBox.setPromptText("Filter by release year");
-
+            releaseYearComboBox.getItems().addAll("ALL YEARS");
+            sortedYears.forEach(year -> releaseYearComboBox.getItems().add(year.toString()));
+            releaseYearComboBox.getSelectionModel().selectFirst(); // Select "ALL YEARS" by default
 
             ratingComboBox.getItems().clear();
-            genreComboBox.setPromptText("Filter by rating");
-            for (int rating = minRating; rating <= maxRating; rating++) {
-                ratingComboBox.getItems().addAll(String.valueOf(rating));
+            ratingComboBox.getItems().addAll("ALL RATINGS");
+            for (double rating = minRating; rating <= maxRating; rating++) {
+                ratingComboBox.getItems().add(String.format(Locale.ROOT, "%.1f", rating)); // Assuming ratings are decimal numbers
             }
+            ratingComboBox.getSelectionModel().selectFirst(); // Select "ALL RATINGS" by default
         });
     }
 
     public void applyFilterAndDisplayResults() {
         String query = searchField.getText().trim().toLowerCase();
+        String genre = genreComboBox.getSelectionModel().getSelectedItem().toString();
+        // Avoid sending "ALL MOVIES" to the server
+        if ("ALL GENRES".equals(genre)) {
+            genre = null;
+        }
 
-        String genre = genreComboBox.getSelectionModel().getSelectedItem().toString(); // Assuming genre is always a String
-        Integer selectedYear = releaseYearComboBox.getSelectionModel().getSelectedItem() instanceof Integer ? (Integer) releaseYearComboBox.getSelectionModel().getSelectedItem() : null;
-        Double selectedRating = ratingComboBox.getSelectionModel().getSelectedItem() instanceof Double ? (Double) ratingComboBox.getSelectionModel().getSelectedItem() : null;
+        String yearFilter = null;
+        Object yearSelection = releaseYearComboBox.getSelectionModel().getSelectedItem();
+        if (yearSelection instanceof Integer) {
+            yearFilter = String.valueOf(yearSelection);
+        } else if (yearSelection instanceof String && !((String) yearSelection).equals("ALL YEARS")) {
+            yearFilter = (String) yearSelection;
+        }
+        if ("ALL YEARS".equals(yearFilter)) {
+            yearFilter = null;
+        }
 
-        // Now convert selectedYear and selectedRating to strings as needed for fetchMovies, or use null to represent 'all'
-        String yearFilter = selectedYear != null ? String.valueOf(selectedYear) : null;
-        String ratingFilter = selectedRating != null ? String.format("%.1f", selectedRating) : null;
+        String ratingFilter = null;
+        Object ratingSelection = ratingComboBox.getSelectionModel().getSelectedItem();
+        if (ratingSelection instanceof Number) {
+            ratingFilter = String.format(Locale.ROOT, "%.1f", ((Number) ratingSelection).doubleValue());
+        } else if (ratingSelection instanceof String && !((String) ratingSelection).equals("ALL RATINGS")) {
+            ratingFilter = (String) ratingSelection;
+        }
+        if ("ALL RATINGS".equals(ratingFilter)) {
+            ratingFilter = null;
+        }
 
+        // Proceed with fetching movies using the adjusted parameters
         List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, yearFilter, ratingFilter);
         Platform.runLater(() -> {
             observableMovies.setAll(filteredMovies);

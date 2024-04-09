@@ -19,14 +19,24 @@ public class MovieAPI {
 
     private static String buildURL(String query, String genre, String releaseYear, String ratingFrom) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-        if (query != null) urlBuilder.addQueryParameter("query", query);
-        if (genre != null) urlBuilder.addQueryParameter("genre", genre);
-        if (releaseYear != null) urlBuilder.addQueryParameter("releaseYear", releaseYear);
-        if (ratingFrom != null) urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
+        if (query != null && !query.isEmpty()) urlBuilder.addQueryParameter("query", query);
 
-        String url = urlBuilder.build().toString();
-        System.out.println("Generated URL: " + url);
-        return url;
+        // Only add the genre parameter if it is not "ALL MOVIES"
+        if (genre != null && !genre.isEmpty() && !genre.equals("ALL MOVIES")) {
+            urlBuilder.addQueryParameter("genre", genre);
+        }
+
+        // Only add the releaseYear parameter if it is not "ALL YEARS"
+        if (releaseYear != null && !releaseYear.isEmpty() && !releaseYear.equals("ALL YEARS")) {
+            urlBuilder.addQueryParameter("releaseYear", releaseYear);
+        }
+
+        // Only add the ratingFrom parameter if it is not "ALL RATINGS"
+        if (ratingFrom != null && !ratingFrom.isEmpty() && !ratingFrom.equals("ALL RATINGS")) {
+            urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
+        }
+
+        return urlBuilder.build().toString();
     }
 
     public static List<Movie> fetchMovies(String query, String genre, String releaseYear, String ratingFrom) {
