@@ -49,7 +49,6 @@ public class HomeController implements Initializable {
         }
         genreComboBox.getSelectionModel().select("ALL MOVIES");
 
-        loadMovies();
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
@@ -70,23 +69,27 @@ public class HomeController implements Initializable {
             }
             movieListView.refresh();
         });
+
+        loadMovies();
     }
 
 
     private void loadMovies() {
         Platform.runLater(() -> {
             observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
+
         });
     }
     private void applyFilterAndDisplayResults() {
-        String query = searchField.getText().trim();
+        String query = searchField.getText().trim().toLowerCase();
         String selectedGenreName = genreComboBox.getSelectionModel().getSelectedItem().toString();
         Genre genre = "ALL MOVIES".equals(selectedGenreName) ? null : Genre.valueOf(selectedGenreName);
 
-        List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, null, null); // Lädt gefilterte Filme
-        //movieFilter(query, genre);
+
+        List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, null, null);
         Platform.runLater(() -> {
             observableMovies.setAll(filteredMovies);
+            movieListView.refresh();
         });
     }
 
@@ -99,7 +102,7 @@ public class HomeController implements Initializable {
         for (Movie movie : allMovies) {
             boolean matchesQuery = query.isEmpty() ||
                     movie.getTitle().toLowerCase().contains(query) ||
-                    movie.getDescription().trim().toLowerCase().contains(query.trim().toLowerCase());
+                    movie.getDescription().toLowerCase().contains(query);
 
             boolean matchesGenre = selectedGenre == null ||
                     movie.getGenres().contains(selectedGenre);
@@ -108,7 +111,6 @@ public class HomeController implements Initializable {
                 filteredMovies.add(movie);
             }
         }
-
         return filteredMovies;
     }
 
