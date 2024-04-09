@@ -6,15 +6,18 @@ import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,8 +30,8 @@ public class HomeController implements Initializable {
     public TextField searchField;
 
     @FXML
-    public JFXListView movieListView;
-
+    private JFXListView<Movie> movieListView;
+    private MovieAPI movieApiService = new MovieAPI();
     @FXML
     public JFXComboBox genreComboBox;
 
@@ -41,29 +44,23 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        observableMovies.addAll(allMovies);         // add dummy data to observable list
-
-        // initialize UI stuff
-        movieListView.setItems(observableMovies);   // set data of observable list to list view
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
-
-        genreComboBox.setPromptText("Select Genre");
-        genreComboBox.getItems().add("ALL MOVIES");
-        genreComboBox.getItems().addAll(Arrays.stream(Genre.values()).map(Enum::name).collect(Collectors.toList()));
+        genreComboBox.getItems().addAll("ALL MOVIES");
+        for (Genre genre : Genre.values()) {
+            genreComboBox.getItems().add(genre.name());
+        }
         genreComboBox.getSelectionModel().select("ALL MOVIES");
 
-        // either set event handlers in the fxml file (onAction) or add them here
+        loadMovies();
+        movieListView.setItems(observableMovies);
+        movieListView.setCellFactory(movieListView -> new MovieCell());
+
         searchBtn.setOnAction(actionEvent -> applyFilterAndDisplayResults());
-        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode() == KeyCode.ENTER) {
-                    searchBtn.fire();
-                }
+        searchField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                searchBtn.fire();
             }
         });
 
-        // Sort button example:
         sortBtn.setOnAction(actionEvent -> {
             if (sortBtn.getText().equals("Sort (asc)")) {
                 descending();
@@ -74,6 +71,19 @@ public class HomeController implements Initializable {
             }
             movieListView.refresh();
         });
+    }
+
+    private void loadMovies() {
+        Platform.runLater(() -> {
+            observableMovies.setAll(MovieAPI.fetchAllMovies());
+        });
+    }
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     public List<Movie> movieFilter(String query, Genre selectedGenre) {
