@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb.models;
 import at.ac.fhcampuswien.fhmdb.HomeController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Movie {
@@ -37,6 +38,10 @@ public class Movie {
         return title + " (" + (String.valueOf(releaseYear)) + ")";
     }
 
+    public String getTitleForTest() {
+        return title;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -58,11 +63,21 @@ public class Movie {
     public List<Genre> getGenres() {
         return genres;
     }
-    public String getStringReleaseYear() {
-        return "Release Date: " + String.valueOf(releaseYear);
+    public int getReleaseYear() {
+        return releaseYear;
     }
     public String getRating() {
         return String.valueOf(rating) + " / 10";
+    }
+
+    public List<String> getDirector() {
+        return director;
+    }
+    public List<String> getWriters() {
+        return writers;
+    }
+    public List<String> getMainCast() {
+        return mainCast;
     }
 
     public static List<Movie> initializeMovies() {
