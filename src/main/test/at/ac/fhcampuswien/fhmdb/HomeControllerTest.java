@@ -43,8 +43,10 @@ class HomeControllerTest {
                 Genre.WESTERN
         };
 
+
         //When
         Genre[] actualGenres = Genre.values();
+
 
         //Then
         for (Genre expectedGenre : expectedGenres) {
