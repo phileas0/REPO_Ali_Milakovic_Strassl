@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -35,6 +34,11 @@ public class HomeController implements Initializable {
     public JFXComboBox genreComboBox;
 
     @FXML
+    public JFXComboBox releaseYearComboBox;
+
+    @FXML JFXComboBox ratingComboBox;
+
+    @FXML
     public JFXButton sortBtn;
 
     public List<Movie> allMovies = Movie.initializeMovies();
@@ -43,11 +47,12 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        genreComboBox.getItems().addAll("ALL MOVIES");
-        for (Genre genre : Genre.values()) {
-            genreComboBox.getItems().add(genre.name());
-        }
+
         genreComboBox.getSelectionModel().select("ALL MOVIES");
+
+        releaseYearComboBox.getSelectionModel().select("ALL YEARS");
+
+        ratingComboBox.getSelectionModel().select("ALL RATINGS");
 
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
@@ -77,23 +82,72 @@ public class HomeController implements Initializable {
     private void loadMovies() {
         Platform.runLater(() -> {
             observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
+            prepareAndPopulateFilters();
+        });
 
+    }
+
+    public void prepareAndPopulateFilters() {
+        List<Movie> allMovies = MovieAPI.fetchAllMovies(); // Assuming this method returns all movies
+
+        // Extract unique genres
+        Set<String> uniqueGenres = new HashSet<>();
+        for (Movie movie : allMovies) {
+            uniqueGenres.addAll(movie.getGenres());
+        }
+        List<String> sortedGenres = new ArrayList<>(uniqueGenres);
+        Collections.sort(sortedGenres); // Sort, assuming Genre enum has a natural order or implement Comparator
+
+        // Extract unique release years
+        Set<Integer> uniqueYears = new HashSet<>();
+        for (Movie movie : allMovies) {
+            uniqueYears.add(movie.getReleaseYear());
+        }
+        List<Integer> sortedYears = new ArrayList<>(uniqueYears);
+        Collections.sort(sortedYears); // Sort years
+
+        // Assuming ratings are integers for simplicity; adjust logic as needed for your data
+        int minRating = (int) allMovies.stream().mapToDouble(Movie::getNumericRating).min().orElse(1);
+        int maxRating = (int) allMovies.stream().mapToDouble(Movie::getNumericRating).max().orElse(10);
+
+        // Populate ComboBoxes
+        Platform.runLater(() -> {
+            genreComboBox.getItems().clear();
+            genreComboBox.getItems().addAll(sortedGenres);
+            genreComboBox.setPromptText("Filter by genre");
+
+            releaseYearComboBox.getItems().clear();
+            releaseYearComboBox.getItems().addAll(sortedYears);
+            genreComboBox.setPromptText("Filter by release year");
+
+
+            ratingComboBox.getItems().clear();
+            genreComboBox.setPromptText("Filter by rating");
+            for (int rating = minRating; rating <= maxRating; rating++) {
+                ratingComboBox.getItems().addAll(String.valueOf(rating));
+            }
         });
     }
-    private void applyFilterAndDisplayResults() {
+
+    public void applyFilterAndDisplayResults() {
         String query = searchField.getText().trim().toLowerCase();
-        String selectedGenreName = genreComboBox.getSelectionModel().getSelectedItem().toString();
-        Genre genre = "ALL MOVIES".equals(selectedGenreName) ? null : Genre.valueOf(selectedGenreName);
 
+        String genre = genreComboBox.getSelectionModel().getSelectedItem().toString(); // Assuming genre is always a String
+        Integer selectedYear = releaseYearComboBox.getSelectionModel().getSelectedItem() instanceof Integer ? (Integer) releaseYearComboBox.getSelectionModel().getSelectedItem() : null;
+        Double selectedRating = ratingComboBox.getSelectionModel().getSelectedItem() instanceof Double ? (Double) ratingComboBox.getSelectionModel().getSelectedItem() : null;
 
-        List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, null, null);
+        // Now convert selectedYear and selectedRating to strings as needed for fetchMovies, or use null to represent 'all'
+        String yearFilter = selectedYear != null ? String.valueOf(selectedYear) : null;
+        String ratingFilter = selectedRating != null ? String.format("%.1f", selectedRating) : null;
+
+        List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, yearFilter, ratingFilter);
         Platform.runLater(() -> {
             observableMovies.setAll(filteredMovies);
             movieListView.refresh();
         });
     }
 
-    public List<Movie> movieFilter(String query, Genre selectedGenre) {
+    public List<Movie> movieFilter(String query, String selectedGenre) {
         query = query.trim().toLowerCase();
 
         // Bereite die Liste für gefilterte Filme vor
@@ -106,6 +160,7 @@ public class HomeController implements Initializable {
 
             boolean matchesGenre = selectedGenre == null ||
                     movie.getGenres().contains(selectedGenre);
+
 
             if (matchesQuery && matchesGenre) {
                 filteredMovies.add(movie);

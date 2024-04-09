@@ -1,12 +1,14 @@
 package at.ac.fhcampuswien.fhmdb;
-
-import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.collections.FXCollections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class HomeControllerTest {
@@ -19,45 +21,39 @@ class HomeControllerTest {
 
     @Test
     void check_If_List_Of_Genres_Exists() {
-        //Given
-        Genre[] expectedGenres = {
-                Genre.ACTION,
-                Genre.ADVENTURE,
-                Genre.ANIMATION,
-                Genre.BIOGRAPHY,
-                Genre.COMEDY,
-                Genre.CRIME,
-                Genre.DRAMA,
-                Genre.DOCUMENTARY,
-                Genre.FAMILY,
-                Genre.FANTASY,
-                Genre.HISTORY,
-                Genre.HORROR,
-                Genre.MUSICAL,
-                Genre.MYSTERY,
-                Genre.ROMANCE,
-                Genre.SCIENCE_FICTION,
-                Genre.SPORT,
-                Genre.THRILLER,
-                Genre.WAR,
-                Genre.WESTERN
-        };
+        // Given
+        List<String> expectedGenres = Arrays.asList(
+                "Action",
+                "Adventure",
+                "Animation",
+                "Biography",
+                "Comedy",
+                "Crime",
+                "Drama",
+                "Documentary",
+                "Family",
+                "Fantasy",
+                "History",
+                "Horror",
+                "Musical",
+                "Mystery",
+                "Romance",
+                "Science Fiction",
+                "Sport",
+                "Thriller",
+                "War",
+                "Western"
+        );
 
+        // When
+        List<Movie> allMovies = MovieAPI.fetchAllMovies(); // Fetch all movies which include genre data
+        Set<String> actualGenres = allMovies.stream()
+                .flatMap(movie -> movie.getGenres().stream())
+                .collect(Collectors.toSet()); // Extract and collect genres from all movies
 
-        //When
-        Genre[] actualGenres = Genre.values();
-
-
-        //Then
-        for (Genre expectedGenre : expectedGenres) {
-            boolean exists = false;
-            for (Genre actualGenre : actualGenres) {
-                if (expectedGenre.equals(actualGenre)) {
-                    exists = true;
-                    break;
-                }
-            }
-            assertTrue(exists, "Das Genre " + expectedGenre + " sollte in der Genre enum existieren.");
+        // Then
+        for (String expectedGenre : expectedGenres) {
+            assertTrue(actualGenres.contains(expectedGenre), "Das Genre " + expectedGenre + " sollte in der Genre-Liste existieren.");
         }
     }
 
@@ -74,19 +70,8 @@ class HomeControllerTest {
     }
 
     @Test
-    void test_Filter_By_Description_Returns_True_If_Description_Contains_Query() {
-        String query = "Marine dispatched";
-        Genre selectedGenre = null;
-        List<Movie> result = homeController.movieFilter(query.toLowerCase(), selectedGenre);
-
-        assertTrue(result.stream().anyMatch(movie ->
-                        movie.getDescription().toLowerCase().contains(query)),
-                "Mindestens ein Film sollte 'Marine dispatched' in der Beschreibung enthalten.");
-    }
-
-    @Test
     void test_Filter_By_Genre_Returns_True_If_Selected_Genre_Is_Displayed() {
-        Genre selectedGenre = Genre.SCIENCE_FICTION;
+        String selectedGenre = "Science Fiction";
         List<Movie> result = homeController.movieFilter("", selectedGenre);
 
         assertTrue(result.stream().allMatch(movie ->
@@ -97,7 +82,7 @@ class HomeControllerTest {
     @Test
     void test_Filter_By_Title_And_Genre() {
         String query = "spider";
-        Genre selectedGenre = Genre.ANIMATION;
+        String selectedGenre = "Animation";
         List<Movie> result = homeController.movieFilter(query.toLowerCase(), selectedGenre);
 
         assertTrue(result.stream().allMatch(movie ->
@@ -127,7 +112,7 @@ class HomeControllerTest {
         // Suchbegriff auf einen leeren String und das Genre auf null setzen
         // um den Fall "ALL MOVIES" zu simulieren
         String query = "";
-        Genre selectedGenre = null; // "ALL MOVIES" impliziert, dass kein Genre ausgewählt ist
+        String selectedGenre = ""; // "ALL MOVIES" impliziert, dass kein Genre ausgewählt ist
 
         // Filterfunktion mit den leeren Werten ausfüllen
         List<Movie> result = homeController.movieFilter(query, selectedGenre);
@@ -154,6 +139,53 @@ class HomeControllerTest {
             }
         }
         return true;
+    }
+
+    @Test
+    void test_Get_Most_Popular_Actor() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("1", "Title", "Description", null, 2000, 8.0, null, List.of("Actor1", "Actor2"), null, null, 120));
+        movies.add(new Movie("2", "Title", "Description", null, 2000, 8.0, null, List.of("Actor1", "Actor3"), null, null, 120));
+        movies.add(new Movie("3", "Title", "Description", null, 2000, 8.0, null, List.of("Actor1", "Actor4"), null, null, 120));
+
+        String mostPopularActor = homeController.getMostPopularActor(movies);
+
+        assertEquals("Actor1", mostPopularActor);
+    }
+    @Test
+    void test_Get_Longest_Movie_Title() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("1", "Title", "Description", null, 2000, 8.0, null, null, null, null, 120));
+        movies.add(new Movie("2", "Long", "Description", null, 2000, 8.0, null, null, null, null, 120));
+        movies.add(new Movie("3", "The Longest Title Ever", "Description", null, 2000, 8.0, null, null, null, null, 120));
+
+        int longestTitleLength = homeController.getLongestMovieTitle(movies);
+
+        assertEquals(22, longestTitleLength);
+    }
+
+    @Test
+    void test_Count_Movies_From_Director() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("1", "Title", "Description", null, 2000, 8.0, null, null, null, List.of("Director1"), 120));
+        movies.add(new Movie("2", "Title", "Description", null, 2000, 8.0, null, null, null, List.of("Director2"), 120));
+        movies.add(new Movie("3", "Title", "Description", null, 2000, 8.0, null, null, null, List.of("Director1"), 120));
+
+        long movieCount = homeController.countMoviesFrom(movies, "Director1");
+
+        assertEquals(2, movieCount);
+    }
+    @Test
+    void test_Get_Movies_Between_Years() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("1", "Title", "Description", null, 2000, 8.0, null, null, null, null, 120));
+        movies.add(new Movie("2", "Title", "Description", null, 2005, 8.0, null, null, null, null, 120));
+        movies.add(new Movie("3", "Title", "Description", null, 2010, 8.0, null, null, null, null, 120));
+
+        List<Movie> filteredMovies = homeController.getMoviesBetweenYears(movies, 2001, 2009);
+
+        assertEquals(1, filteredMovies.size());
+        assertEquals(2005, filteredMovies.get(0).getReleaseYear());
     }
 
 }

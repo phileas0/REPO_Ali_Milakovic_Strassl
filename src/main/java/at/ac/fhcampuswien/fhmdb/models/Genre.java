@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.fhmdb.models;
+/*package at.ac.fhcampuswien.fhmdb.models;
 
 public enum Genre {
     ACTION,
@@ -22,3 +22,4 @@ public enum Genre {
     WAR,
     WESTERN
 }
+*/

@@ -10,7 +10,7 @@ public class Movie {
     private String id;
     private String title;
     private String description;
-    private List<Genre> genres;
+    private List<String> genres;
     private int releaseYear;
     private double rating;
     private String imgUrl;
@@ -20,7 +20,7 @@ public class Movie {
     private int lengthInMinutes;
 
 
-    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating, String imgUrl, List<String> mainCast, List<String> writers, List<String> director, int lengthInMinutes) {
+    public Movie(String id, String title, String description, List<String> genres, int releaseYear, double rating, String imgUrl, List<String> mainCast, List<String> writers, List<String> director, int lengthInMinutes) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -47,20 +47,10 @@ public class Movie {
     }
 
     public String getGenresString() {
-        StringBuilder genreList = new StringBuilder();
-        for (int i = 0; i < genres.size(); i++) {
-            if (genres.get(i) == Genre.SCIENCE_FICTION) {
-                genreList.append("SCIENCE FICTION");
-            }
-            else genreList.append(genres.get(i));
-            if ((i + 1) < genres.size()) {
-                genreList.append(", ");
-            }
-        }
-        return genreList.toString();
+        return String.join(", ", genres);
     }
 
-    public List<Genre> getGenres() {
+    public List<String> getGenres() {
         return genres;
     }
     public int getReleaseYear() {
@@ -68,6 +58,10 @@ public class Movie {
     }
     public String getRating() {
         return String.valueOf(rating) + " / 10";
+    }
+
+    public double getNumericRating() {
+        return rating;
     }
 
     public List<String> getDirector() {
