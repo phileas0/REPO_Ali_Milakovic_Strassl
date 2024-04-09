@@ -35,7 +35,7 @@ public class MovieCell extends ListCell<Movie> {
             );
             genre.setText(movie.getGenresString());
             //releaseYear.setText(movie.getStringReleaseYear());
-            rating.setText(movie.getRatingFrom());
+            rating.setText(movie.getRating());
 
 
             // color scheme

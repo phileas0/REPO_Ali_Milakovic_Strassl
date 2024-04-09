@@ -1,22 +1,34 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Movie {
+    private String id;
     private String title;
     private String description;
     private List<Genre> genres;
     private int releaseYear;
-    private double ratingFrom;
+    private double rating;
+    private String imgUrl;
+    private List<String> mainCast;
+    private List<String> writers;
+    private List<String> director;
+    private int lengthInMinutes;
 
-    public Movie(String title, String description, List<Genre> genres, int releaseYear, double ratingFrom) {
+
+    public Movie(String id, String title, String description, List<Genre> genres, int releaseYear, double rating, String imgUrl, List<String> mainCast, List<String> writers, List<String> director, int lengthInMinutes) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
-        this.ratingFrom = ratingFrom;
+        this.rating = rating;
+        this.imgUrl = imgUrl;
+        this.mainCast = mainCast;
+        this.writers = writers;
+        this.director = director;
+        this.lengthInMinutes = lengthInMinutes;
     }
 
     public String getTitle() {
@@ -47,15 +59,16 @@ public class Movie {
     public String getStringReleaseYear() {
         return "Release Date: " + String.valueOf(releaseYear);
     }
-    public String getRatingFrom() {
-        return String.valueOf(ratingFrom) + " / 10";
+    public String getRating() {
+        return String.valueOf(rating) + " / 10";
     }
 
     public static List<Movie> initializeMovies() {
         List<Movie> movies = new ArrayList<>();
 
-        movies.add(new Movie("Poor Things", "Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE), 2023, 9.3));
-        movies.add(new Movie("Forrest Gump", "Forrest Gump is a film about the extraordinary life of a simple man who, through chance encounters and a sincere approach to life, achieves unexpected fame. Along the way, he experiences significant historical events and learns the importance of love, friendship, and self-determination.", Arrays.asList(Genre.WAR, Genre.ROMANCE, Genre.FANTASY, Genre.ADVENTURE, Genre.COMEDY), 1994, 8.8));
+        /*
+        movies.add(new Movie("Poor Things", "Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE), 2023, 9.3, Arrays.asList("Emma Stone", "Mark Ruffalo"), "Giorgos Lanthimos", 141));
+        movies.add(new Movie("Forrest Gump", "Forrest Gump is a film about the extraordinary life of a simple man who, through chance encounters and a sincere approach to life, achieves unexpected fame. Along the way, he experiences significant historical events and learns the importance of love, friendship, and self-determination.", Arrays.asList(Genre.WAR, Genre.ROMANCE, Genre.FANTASY, Genre.ADVENTURE, Genre.COMEDY), 1994, 8.8, Arrays.asList("Emma Stone", "Mark Ruffalo"), "Giorgos Lanthimos", 141));
         movies.add(new Movie("Dune: Part One", "The first of part Dune directed by Dennis Villeneuve, depicts a young nobleman's journey on a desert planet as he becomes entangled in political intrigue and the mystical powers of an ancient prophecy.", Arrays.asList(Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE, Genre.WAR, Genre.SCIENCE_FICTION, Genre.DRAMA), 2021, 8.2));
         movies.add(new Movie("The Godfather", "The Godfather Part I follows the rise of Michael Corleone within a powerful Mafia family, navigating a world of crime, loyalty, and betrayal amidst the backdrop of 1940s New York.", Arrays.asList(Genre.CRIME, Genre.DRAMA), 1972, 8.9));
         movies.add(new Movie("Midsommar", "Midsommar, directed by Ari Aster, explores a group of friends' journey to a remote Swedish village to partake in a festival, unraveling a disturbing and surreal descent into pagan rituals and psychological horror.", Arrays.asList(Genre.HORROR, Genre.FANTASY, Genre.THRILLER, Genre.MYSTERY, Genre.DOCUMENTARY), 2019, 8.3));
@@ -74,6 +87,7 @@ public class Movie {
         movies.add(new Movie("Nobody", "A mild-mannered family man who returns to his former life of an assassin after he and his family become the target of a vengeful crime lord.", Arrays.asList(Genre.DRAMA, Genre.ACTION, Genre.CRIME, Genre.COMEDY), 2021, 8.9));
         movies.add(new Movie("Poor Things", "Porn Movie with Emma Stone and Mark Ruffalo", Arrays.asList(Genre.DRAMA, Genre.ADVENTURE, Genre.FANTASY, Genre.ROMANCE), 2023, 9.3));
 
+         */
         return movies;
     }
 }
