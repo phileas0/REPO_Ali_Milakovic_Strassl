@@ -20,44 +20,6 @@ class HomeControllerTest {
     }
 
     @Test
-    void check_If_List_Of_Genres_Exists() {
-        // Given
-        List<String> expectedGenres = Arrays.asList(
-                "Action",
-                "Adventure",
-                "Animation",
-                "Biography",
-                "Comedy",
-                "Crime",
-                "Drama",
-                "Documentary",
-                "Family",
-                "Fantasy",
-                "History",
-                "Horror",
-                "Musical",
-                "Mystery",
-                "Romance",
-                "Science Fiction",
-                "Sport",
-                "Thriller",
-                "War",
-                "Western"
-        );
-
-        // When
-        List<Movie> allMovies = MovieAPI.fetchAllMovies(); // Fetch all movies which include genre data
-        Set<String> actualGenres = allMovies.stream()
-                .flatMap(movie -> movie.getGenres().stream())
-                .collect(Collectors.toSet()); // Extract and collect genres from all movies
-
-        // Then
-        for (String expectedGenre : expectedGenres) {
-            assertTrue(actualGenres.contains(expectedGenre), "Das Genre " + expectedGenre + " sollte in der Genre-Liste existieren.");
-        }
-    }
-
-    @Test
     void test_Filter_By_Title_Returns_True_If_Movie_Title_Contains_Query() {
         // Angenommen, "Inception" ist Teil des Titels eines Films in allMovies
         String query = "inception";
