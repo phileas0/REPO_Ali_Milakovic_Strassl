@@ -10,11 +10,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,6 +48,36 @@ public class HomeController implements Initializable {
     public List<Movie> allMovies = Movie.initializeMovies();
 
     final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
+
+    @FXML
+    private Button switchToWatchlistButton;
+    @FXML
+    private Button switchToHomeButton;
+
+    public HomeController() {
+    }
+
+    public void switchToWatchlist() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = (Stage) switchToWatchlistButton.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle this properly
+        }
+    }
+
+    public void switchToHome() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = (Stage) switchToHomeButton.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle this properly
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
