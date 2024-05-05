@@ -53,11 +53,14 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
+
+        <!-- ORMLite JDBC -->
         <dependency>
             <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
+            <artifactId>ormlite-jdbc</artifactId>
             <version>6.1</version>
         </dependency>
+
 
     </dependencies>
 
