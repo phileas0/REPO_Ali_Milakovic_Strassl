@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -258,4 +259,7 @@ public class HomeController implements Initializable {
                 .collect(Collectors.toList());
     }
 
+    public void handleViewSelection(){
+
+    }
 }
