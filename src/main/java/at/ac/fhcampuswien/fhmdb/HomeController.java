@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -23,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +58,9 @@ public class HomeController implements Initializable {
     @FXML
     private Button switchToHomeButton;
 
+    private MovieRepository movieRepository;
+    private WatchlistRepository watchlistRepository;
+
     public HomeController() {
     }
 
@@ -83,6 +89,14 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        try {
+            movieRepository = new MovieRepository(FhmdbApplication.getDatabaseManager().getConnectionSource());
+            watchlistRepository = new WatchlistRepository(FhmdbApplication.getDatabaseManager().getConnectionSource());
+
+            // Weitere Initialisierungen...
+        } catch (SQLException e) {
+            e.printStackTrace(); // Bessere Fehlerbehandlung implementieren
+        }
 
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());

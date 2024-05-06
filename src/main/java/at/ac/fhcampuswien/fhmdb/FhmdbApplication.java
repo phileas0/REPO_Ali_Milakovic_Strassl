@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.database.DatabaseManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,8 +10,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class FhmdbApplication extends Application {
+    private static DatabaseManager databaseManager;
+
     @Override
     public void start(Stage stage) throws IOException {
+        initializeDatabase();
+
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 890, 620);
         scene.getStylesheets().add(Objects.requireNonNull(FhmdbApplication.class.getResource("styles.css")).toExternalForm());
@@ -19,7 +24,24 @@ public class FhmdbApplication extends Application {
         stage.show();
     }
 
+    private void initializeDatabase() {
+        databaseManager = new DatabaseManager();
+    }
+
+    public static DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
     public static void main(String[] args) {
         launch();
     }
+
+    @Override
+    public void stop() throws Exception {
+        if (databaseManager != null) {
+            databaseManager.closeConnection();
+        }
+        super.stop();
+    }
+
 }

@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "movies")
 public class MovieEntity {
     @DatabaseField(generatedId = true)
-    private int id;
+    private long id;
 
     @DatabaseField(canBeNull = false)
     private String title;
