@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -10,7 +12,12 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLException;
+
+import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.convertMovieToMovieEntity;
+
 public class MovieCell extends ListCell<Movie> {
+
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
@@ -18,22 +25,44 @@ public class MovieCell extends ListCell<Movie> {
     private final Label rating = new Label();
     private final VBox layout = new VBox(title, detail, genre);
     private final VBox secondLayout = new VBox();
-    private final Button addToWatchlistButton = new Button("Add to Watchlist");
-    private final Button removeFromWatchlistButton = new Button("Remove");
+    private WatchlistRepository watchlistRepo; // Repository-Instanz
+    private Button addToWatchlistButton = new Button("Add to Watchlist");
+    private Button removeFromWatchlistButton = new Button("Remove");
 
-    public MovieCell() {
+    public MovieCell(WatchlistRepository watchlistRepo) {
         super();
+        initializeCellComponents();
+        this.watchlistRepo = watchlistRepo;
         layout.getChildren().addAll(addToWatchlistButton, removeFromWatchlistButton);
         addToWatchlistButton.setOnAction(event -> addToWatchlist(getItem()));
         removeFromWatchlistButton.setOnAction(event -> removeFromWatchlist(getItem()));
     }
 
+    private void initializeCellComponents() {
+        Button addToWatchlistButton = new Button("Add to Watchlist");
+        addToWatchlistButton.setOnAction(event -> addToWatchlist(getItem()));
+        // similar setup for other components
+    }
+
     private void addToWatchlist(Movie movie) {
-        // Logic to add movie to watchlist
+        try {
+            WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity();
+            // Stelle sicher, dass du die `MovieEntity` von `Movie` umwandelst
+            watchlistMovie.setMovie(convertMovieToMovieEntity(movie));
+            watchlistRepo.addToWatchlist(watchlistMovie);
+        } catch (SQLException e) {
+            e.printStackTrace(); // Fehlerbehandlung
+        }
     }
 
     private void removeFromWatchlist(Movie movie) {
-        // Logic to remove movie from watchlist
+        try {
+            // Hier musst du die entsprechende Logik implementieren, um eine WatchlistMovieEntity zu löschen
+            watchlistRepo.removeFromWatchlist(movie.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Fehlerbehandlung
+        }
     }
 
     @Override

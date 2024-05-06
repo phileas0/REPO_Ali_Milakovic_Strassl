@@ -10,4 +10,12 @@ public class WatchlistMovieEntity {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private MovieEntity movie;
 
+    public MovieEntity getMovie() {
+        return movie;
+    }
+
+    public void setMovie(MovieEntity movie) {
+        this.movie = movie;
+    }
+
 }

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class WatchlistRepository {
-    private Dao<WatchlistMovieEntity, Integer> watchlistDao;
+    private Dao<WatchlistMovieEntity, String> watchlistDao;
 
     public WatchlistRepository(ConnectionSource connectionSource) throws SQLException {
         watchlistDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
@@ -24,7 +24,11 @@ public class WatchlistRepository {
     }
 
     // Einen Eintrag aus der Watchlist löschen
-    public void removeFromWatchlist(int id) throws SQLException {
-        watchlistDao.deleteById(id);
+    public void removeFromWatchlist(String id) throws SQLException {
+        // Annahme: Du hast bereits eine Methode, die per ID löscht, die aber angepasst werden muss
+        WatchlistMovieEntity entityToDelete = watchlistDao.queryForId(id);
+        if (entityToDelete != null) {
+            watchlistDao.delete(entityToDelete);
+        }
     }
 }

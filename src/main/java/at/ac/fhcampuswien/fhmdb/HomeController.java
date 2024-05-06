@@ -2,8 +2,11 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
@@ -16,9 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -30,6 +31,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
+    @FXML
+    private ComboBox<String> viewSelector;
     @FXML
     public JFXButton searchBtn;
 
@@ -57,6 +60,8 @@ public class HomeController implements Initializable {
     private Button switchToWatchlistButton;
     @FXML
     private Button switchToHomeButton;
+
+    private ConnectionSource connectionSource;
 
     private MovieRepository movieRepository;
     private WatchlistRepository watchlistRepository;
@@ -97,9 +102,21 @@ public class HomeController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace(); // Bessere Fehlerbehandlung implementieren
         }
+        try {
+            // Beispiel für eine H2 In-Memory Datenbank
+            String databaseUrl = "jdbc:h2:mem:fhmdb"; // Ersetze dies mit deiner tatsächlichen Datenbank-URL
+            connectionSource = new JdbcConnectionSource(databaseUrl);
+
+            // Initialisiere das Repository mit der Datenbankverbindung
+            watchlistRepository = new WatchlistRepository(connectionSource);
+            movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository));
+        } catch (SQLException e) {
+            e.printStackTrace();  // Füge eine angemessene Fehlerbehandlung hinzu
+        }
+
 
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell());
+        movieListView.setCellFactory(movieListView -> new MovieCell(watchlistRepository));
 
         searchBtn.setOnAction(actionEvent -> applyFilterAndDisplayResults());
         searchField.setOnKeyPressed(keyEvent -> {

@@ -5,18 +5,18 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.util.Callback?>
-<VBox fx:id="watchlistVBox" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.WatchListController">
+<VBox fx:id="watchlistVBox" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController">
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
-    <Label text="Your Watchlist" font="$x1">
+    <Label text="Your Watchlist">
         <font>
             <Font size="24"/>
         </font>
     </Label>
     <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS">
         <cellFactory>
-            <Callback type="javafx.util.Callback">
+            <Callback>
                 <!-- Replace with your MovieCell class path if it includes specific handling -->
                 <fx:include source="home-view.fxml"/>
             </Callback>

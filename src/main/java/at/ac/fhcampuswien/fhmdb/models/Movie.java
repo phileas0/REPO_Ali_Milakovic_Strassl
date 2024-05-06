@@ -1,9 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import at.ac.fhcampuswien.fhmdb.HomeController;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Movie {
@@ -72,6 +69,15 @@ public class Movie {
     }
     public List<String> getMainCast() {
         return mainCast;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    // Setter für ID, falls benötigt
+    public void setId(String id) {
+        this.id = id;
     }
 
     public static List<Movie> initializeMovies() {
