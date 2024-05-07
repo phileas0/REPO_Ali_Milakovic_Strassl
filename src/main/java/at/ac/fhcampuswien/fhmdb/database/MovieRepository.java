@@ -3,9 +3,9 @@ package at.ac.fhcampuswien.fhmdb.database;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class MovieRepository {
     private Dao<MovieEntity, Long> movieDao;

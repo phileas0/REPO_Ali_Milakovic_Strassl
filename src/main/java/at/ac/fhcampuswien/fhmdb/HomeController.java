@@ -58,6 +58,7 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton sortBtn;
+    public JFXButton watchlistBtn;
 
     public List<Movie> allMovies = Movie.initializeMovies();
 
@@ -140,16 +141,7 @@ public class HomeController implements Initializable {
 
         windowState = WindowState.HOME;
 
-        viewSelector.getItems().clear();
-        viewSelector.getItems().addAll("Alle Filme", "Watchlist");
-
-        viewSelector.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if ("Watchlist".equals(newSelection)) {
-                switchToWatchlist();
-            } else if ("Alle Filme".equals(newSelection)) {
-                switchToHome();
-            }
-        });
+        watchlistBtn.setOnAction(actionEvent -> switchToWatchlist());
 
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
         movieRepository = new MovieRepository(); // No parameters

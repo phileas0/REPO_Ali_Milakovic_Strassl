@@ -10,7 +10,8 @@ public class WatchlistRepository {
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
 
     public WatchlistRepository() {
-        this.watchlistDao = DatabaseManager.getDatabaseManager().getWatchlistDao();
+        DatabaseManager.getDatabaseManager();
+        this.watchlistDao = DatabaseManager.getWatchlistDao();
     }
 
     // Alle Einträge der Watchlist abrufen
