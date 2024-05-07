@@ -9,6 +9,9 @@ public class MovieEntity {
     @DatabaseField(generatedId = true)
     private long id;
 
+    @DatabaseField
+    private String apiId;
+
     @DatabaseField(canBeNull = false)
     private String title;
 
@@ -50,6 +53,12 @@ public class MovieEntity {
     // Setter for rating
     public void setRating(double rating) {
         this.rating = rating;
+    }
+    public String getApiId() {
+        return apiId;
+    }
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     public static MovieEntity convertMovieToMovieEntity(Movie movie) {

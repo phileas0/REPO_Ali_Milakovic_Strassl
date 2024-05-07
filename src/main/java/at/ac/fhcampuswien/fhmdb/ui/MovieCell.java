@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -47,8 +48,9 @@ public class MovieCell extends ListCell<Movie> {
     private void addToWatchlist(Movie movie) {
         try {
             WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity();
-            // Stelle sicher, dass du die `MovieEntity` von `Movie` umwandelst
-            watchlistMovie.setMovie(convertMovieToMovieEntity(movie));
+            MovieEntity movieEntity = convertMovieToMovieEntity(movie);
+            watchlistMovie.setMovie(movieEntity);
+            watchlistMovie.setApiId(movie.getId());  // Stellen Sie sicher, dass die apiId hier gesetzt wird
             watchlistRepo.addToWatchlist(watchlistMovie);
         } catch (SQLException e) {
             e.printStackTrace(); // Fehlerbehandlung
@@ -57,11 +59,12 @@ public class MovieCell extends ListCell<Movie> {
 
     private void removeFromWatchlist(Movie movie) {
         try {
-            // Hier musst du die entsprechende Logik implementieren, um eine WatchlistMovieEntity zu löschen
-            watchlistRepo.removeFromWatchlist(movie.getId());
+            if (movie != null) {
+                String apiId = movie.getId();  // Annehmen, dass movie.getId() die API ID zurückgibt
+                watchlistRepo.removeFromWatchlist(apiId);
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
-            // Fehlerbehandlung
+            e.printStackTrace(); // Fehlerbehandlung
         }
     }
 
