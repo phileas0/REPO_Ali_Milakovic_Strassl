@@ -1,5 +1,10 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.Interface.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -91,8 +96,33 @@ public class HomeController implements Initializable {
         }
     }
 
+    private ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
+        try {
+            WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity();
+            MovieEntity movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
+            watchlistMovie.setMovie(movieEntity);
+            watchlistMovie.setApiId(movie.getId());  // Stellen Sie sicher, dass die apiId hier gesetzt wird
+            watchlistRepository.addToWatchlist(watchlistMovie);
+        } catch (SQLException e) {
+            e.printStackTrace();  // Fehlerbehandlung
+        }
+    };
+
+    private ClickEventHandler<Movie> removeFromWatchlistHandler = movie -> {
+        if (movie != null) {
+            try {
+                String apiId = movie.getId();  // Annehmen, dass movie.getId() die API ID zurückgibt
+                watchlistRepository.removeFromWatchlist(apiId);
+            } catch (SQLException e) {
+                e.printStackTrace();  // Fehlerbehandlung
+            }
+        }
+    };
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
 
         try {
             movieRepository = new MovieRepository(FhmdbApplication.getDatabaseManager().getConnectionSource());
@@ -109,14 +139,14 @@ public class HomeController implements Initializable {
 
             // Initialisiere das Repository mit der Datenbankverbindung
             watchlistRepository = new WatchlistRepository(connectionSource);
-            movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository));
+            movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
         } catch (SQLException e) {
             e.printStackTrace();  // Füge eine angemessene Fehlerbehandlung hinzu
         }
 
 
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell(watchlistRepository));
+        movieListView.setCellFactory(movieListView -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
 
         searchBtn.setOnAction(actionEvent -> applyFilterAndDisplayResults());
         searchField.setOnKeyPressed(keyEvent -> {

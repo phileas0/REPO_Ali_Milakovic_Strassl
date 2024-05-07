@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.Interface.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -30,42 +31,31 @@ public class MovieCell extends ListCell<Movie> {
     private Button addToWatchlistButton = new Button("Add to Watchlist");
     private Button removeFromWatchlistButton = new Button("Remove");
 
-    public MovieCell(WatchlistRepository watchlistRepo) {
+    private ClickEventHandler<Movie> onAddToWatchlist;
+    private ClickEventHandler<Movie> onRemoveFromWatchlist;
+
+    public MovieCell(WatchlistRepository watchlistRepo, ClickEventHandler<Movie> onAddToWatchlist, ClickEventHandler<Movie> onRemoveFromWatchlist) {
         super();
-        initializeCellComponents();
         this.watchlistRepo = watchlistRepo;
-        layout.getChildren().addAll(addToWatchlistButton, removeFromWatchlistButton);
-        addToWatchlistButton.setOnAction(event -> addToWatchlist(getItem()));
-        removeFromWatchlistButton.setOnAction(event -> removeFromWatchlist(getItem()));
+        this.onAddToWatchlist = onAddToWatchlist;
+        this.onRemoveFromWatchlist = onRemoveFromWatchlist;
+        initializeCellComponents();
     }
 
     private void initializeCellComponents() {
-        Button addToWatchlistButton = new Button("Add to Watchlist");
-        addToWatchlistButton.setOnAction(event -> addToWatchlist(getItem()));
-        // similar setup for other components
-    }
-
-    private void addToWatchlist(Movie movie) {
-        try {
-            WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity();
-            MovieEntity movieEntity = convertMovieToMovieEntity(movie);
-            watchlistMovie.setMovie(movieEntity);
-            watchlistMovie.setApiId(movie.getId());  // Stellen Sie sicher, dass die apiId hier gesetzt wird
-            watchlistRepo.addToWatchlist(watchlistMovie);
-        } catch (SQLException e) {
-            e.printStackTrace(); // Fehlerbehandlung
-        }
-    }
-
-    private void removeFromWatchlist(Movie movie) {
-        try {
-            if (movie != null) {
-                String apiId = movie.getId();  // Annehmen, dass movie.getId() die API ID zurückgibt
-                watchlistRepo.removeFromWatchlist(apiId);
+        layout.getChildren().addAll(addToWatchlistButton, removeFromWatchlistButton);
+        addToWatchlistButton.setOnAction(event -> {
+            Movie item = getItem();
+            if (item != null && onAddToWatchlist != null) {
+                onAddToWatchlist.onClick(item);
             }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Fehlerbehandlung
-        }
+        });
+        removeFromWatchlistButton.setOnAction(event -> {
+            Movie item = getItem();
+            if (item != null && onRemoveFromWatchlist != null) {
+                onRemoveFromWatchlist.onClick(item);
+            }
+        });
     }
 
     @Override
