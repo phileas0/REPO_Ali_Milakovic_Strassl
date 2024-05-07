@@ -10,6 +10,7 @@ import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.WatchListController;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.jfoenix.controls.JFXButton;
@@ -36,6 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
+    public ListView watchlistListView;
     @FXML
     private ComboBox<String> viewSelector;
     @FXML
@@ -61,50 +63,64 @@ public class HomeController implements Initializable {
 
     final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
-    @FXML
-    private Button switchToWatchlistButton;
-    @FXML
-    private Button switchToHomeButton;
-
     private ConnectionSource connectionSource;
 
     private MovieRepository movieRepository;
+
     private WatchlistRepository watchlistRepository;
+
+    public enum WindowState {
+        HOME, WATCHLIST
+    }
+
+    private WindowState windowState = WindowState.HOME;
 
     public HomeController() {
     }
 
     public void switchToWatchlist() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = (Stage) switchToWatchlistButton.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle this properly
+        if (windowState != WindowState.WATCHLIST) {
+            windowState = WindowState.WATCHLIST;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) movieListView.getScene().getWindow();
+                stage.setScene(scene);
+                WatchListController watchListController = loader.getController();
+                watchListController.loadWatchlist(); // Ensure the watchlist is loaded
+            } catch (IOException e) {
+                e.printStackTrace(); // Consider a more user-friendly error handling
+            }
         }
     }
 
     public void switchToHome() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = (Stage) switchToHomeButton.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle this properly
+        if (windowState != WindowState.HOME) {
+            windowState = WindowState.HOME;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) movieListView.getScene().getWindow();
+                stage.setScene(scene);
+            } catch (IOException e) {
+                e.printStackTrace(); // Consider a more user-friendly error handling
+            }
         }
     }
 
     private ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
         try {
+            MovieEntity movieEntity = movieRepository.findByApiId(movie.getId());
+            if (movieEntity == null) {
+                movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
+                movieRepository.createOrUpdate(movieEntity);  // Make sure to implement this method in MovieRepository
+            }
             WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity();
-            MovieEntity movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
             watchlistMovie.setMovie(movieEntity);
-            watchlistMovie.setApiId(movie.getId());  // Stellen Sie sicher, dass die apiId hier gesetzt wird
+            watchlistMovie.setApiId(movie.getId());
             watchlistRepository.addToWatchlist(watchlistMovie);
         } catch (SQLException e) {
-            e.printStackTrace();  // Fehlerbehandlung
+            e.printStackTrace();  // Proper error handling should be added
         }
     };
 
@@ -122,23 +138,30 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        windowState = WindowState.HOME;
+
+        viewSelector.getItems().clear();
+        viewSelector.getItems().addAll("Alle Filme", "Watchlist");
+
+        viewSelector.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if ("Watchlist".equals(newSelection)) {
+                switchToWatchlist();
+            } else if ("Alle Filme".equals(newSelection)) {
+                switchToHome();
+            }
+        });
+
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
+        movieRepository = new MovieRepository(); // No parameters
+        watchlistRepository = new WatchlistRepository(); // No parameters
 
-        try {
-            movieRepository = new MovieRepository(FhmdbApplication.getDatabaseManager().getConnectionSource());
-            watchlistRepository = new WatchlistRepository(FhmdbApplication.getDatabaseManager().getConnectionSource());
-
-            // Weitere Initialisierungen...
-        } catch (SQLException e) {
-            e.printStackTrace(); // Bessere Fehlerbehandlung implementieren
-        }
         try {
             // Beispiel für eine H2 In-Memory Datenbank
             String databaseUrl = "jdbc:h2:mem:fhmdb"; // Ersetze dies mit deiner tatsächlichen Datenbank-URL
             connectionSource = new JdbcConnectionSource(databaseUrl);
 
             // Initialisiere das Repository mit der Datenbankverbindung
-            watchlistRepository = new WatchlistRepository(connectionSource);
+            watchlistRepository = new WatchlistRepository();
             movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
         } catch (SQLException e) {
             e.printStackTrace();  // Füge eine angemessene Fehlerbehandlung hinzu
@@ -320,7 +343,12 @@ public class HomeController implements Initializable {
                 .collect(Collectors.toList());
     }
 
-    public void handleViewSelection(){
-
+    public void handleViewSelection() {
+        String selectedView = viewSelector.getSelectionModel().getSelectedItem();
+        if ("Watchlist".equals(selectedView)) {
+            switchToWatchlist();
+        } else if ("Alle Filme".equals(selectedView)) {
+            loadMovies();  // Methode, um alle Filme zu laden
+        }
     }
 }

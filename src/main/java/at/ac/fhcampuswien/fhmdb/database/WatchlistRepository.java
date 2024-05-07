@@ -1,17 +1,16 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.ConnectionSource;
+
 import java.sql.SQLException;
 import java.util.List;
 
 public class WatchlistRepository {
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
 
-    public WatchlistRepository(ConnectionSource connectionSource) throws SQLException {
-        watchlistDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
+    public WatchlistRepository() {
+        this.watchlistDao = DatabaseManager.getDatabaseManager().getWatchlistDao();
     }
 
     // Alle Einträge der Watchlist abrufen
@@ -21,12 +20,17 @@ public class WatchlistRepository {
 
     // Einen Film zur Watchlist hinzufügen
     public void addToWatchlist(WatchlistMovieEntity watchlistMovie) throws SQLException {
-        watchlistDao.create(watchlistMovie);
+        try {
+            watchlistDao.createIfNotExists(watchlistMovie);
+            System.out.println("Added to watchlist: " + watchlistMovie.getMovie().getTitle());
+        } catch (SQLException e) {
+            System.err.println("Error adding to watchlist: " + e.getMessage());
+            throw e;
+        }
     }
 
     // Einen Eintrag aus der Watchlist löschen
     public void removeFromWatchlist(String apiId) throws SQLException {
-        // Annahme: Du hast bereits eine Methode, die per ID löscht, die aber angepasst werden muss
         DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = watchlistDao.deleteBuilder();
         deleteBuilder.where().eq("apiId", apiId);
         int deletedRows = deleteBuilder.delete();

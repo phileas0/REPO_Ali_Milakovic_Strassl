@@ -67,39 +67,36 @@ public class MovieCell extends ListCell<Movie> {
             setGraphic(null);
             getStyleClass().remove("movie-cell");
         } else {
+            // Debugging output to verify movie details
+            System.out.println("Updating cell with: " + movie.getTitle());
 
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
-            detail.setText(
-                    movie.getDescription() != null
-                            ? movie.getDescription()
-                            : "No description available"
-            );
+            detail.setText(movie.getDescription() != null ? movie.getDescription() : "No description available");
             genre.setText(movie.getGenresString());
-            //releaseYear.setText(movie.getStringReleaseYear());
             rating.setText(movie.getRating());
 
-
-            // color scheme
+            // Additional UI setups
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-white");
-            //releaseYear.getStyleClass().add("text-white");
             rating.getStyleClass().add("text-cyan");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
-            // layout
+            // Layout properties
             title.fontProperty().set(title.getFont().font(20));
             detail.setMaxWidth(this.getScene().getWidth() - 30);
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+
             if (!layout.getChildren().contains(rating)) {
                 layout.getChildren().addAll(rating);
             }
             setGraphic(layout);
         }
     }
+
 }
 

@@ -1,39 +1,40 @@
 package at.ac.fhcampuswien.fhmdb.database;
+
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.DeleteBuilder;
+
 import java.sql.SQLException;
 import java.util.List;
 
 public class MovieRepository {
-    private Dao<MovieEntity, Integer> movieDao;
+    private Dao<MovieEntity, Long> movieDao;
 
-    public MovieRepository(ConnectionSource connectionSource) throws SQLException {
-        movieDao = DaoManager.createDao(connectionSource, MovieEntity.class);
+    public MovieRepository() {
+        this.movieDao = DatabaseManager.getDatabaseManager().getMovieDao();
     }
 
-    // Lesen aller Filme
-    public List<MovieEntity> findAll() throws SQLException {
-        return movieDao.queryForAll();
+    public void createOrUpdate(MovieEntity movieEntity) throws SQLException {
+        MovieEntity existingMovie = findByApiId(movieEntity.getApiId());
+        if (existingMovie == null) {
+            movieDao.create(movieEntity);
+        } else {
+            movieEntity.setId(existingMovie.getId()); // Assuming 'id' is your generated or manually set ID
+            movieDao.update(movieEntity);
+        }
     }
 
-    // Einen Film hinzufügen
-    public void addMovie(MovieEntity movie) throws SQLException {
-        movieDao.create(movie);
+    // Einen Film nach API ID löschen
+    public void deleteMovieByApiId(String apiId) throws SQLException {
+        DeleteBuilder<MovieEntity, Long> deleteBuilder = movieDao.deleteBuilder();
+        deleteBuilder.where().eq("apiId", apiId);
+        deleteBuilder.delete();
     }
 
-    // Einen Film nach ID löschen
-    public void deleteMovie(int id) throws SQLException {
-        movieDao.deleteById(id);
-    }
-
-    // Einen Film aktualisieren
-    public void updateMovie(MovieEntity movie) throws SQLException {
-        movieDao.update(movie);
-    }
-
-    // Einen Film nach ID suchen
-    public MovieEntity findById(int id) throws SQLException {
-        return movieDao.queryForId(id);
+    // Einen Film nach API ID suchen
+    public MovieEntity findByApiId(String apiId) throws SQLException {
+        QueryBuilder<MovieEntity, Long> queryBuilder = movieDao.queryBuilder();
+        queryBuilder.where().eq("apiId", apiId);
+        return movieDao.queryForFirst(queryBuilder.prepare());
     }
 }

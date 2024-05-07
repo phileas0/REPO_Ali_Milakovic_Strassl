@@ -57,5 +57,4 @@
       </padding>
    </HBox>
    <JFXListView fx:id="movieListView" styleClass="background-black" style="-fx-background-color: black;" stylesheets="@styles.css" VBox.vgrow="ALWAYS" />
-
 </VBox>

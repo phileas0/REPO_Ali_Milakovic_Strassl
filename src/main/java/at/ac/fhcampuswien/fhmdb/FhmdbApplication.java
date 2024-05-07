@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class FhmdbApplication extends Application {
     private static DatabaseManager databaseManager;
@@ -15,17 +14,14 @@ public class FhmdbApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         initializeDatabase();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 890, 620);
-        scene.getStylesheets().add(Objects.requireNonNull(FhmdbApplication.class.getResource("styles.css")).toExternalForm());
-        stage.setTitle("FHMDb");
         stage.setScene(scene);
         stage.show();
     }
 
     private void initializeDatabase() {
-        databaseManager = new DatabaseManager();
+        databaseManager = DatabaseManager.getDatabaseManager();
     }
 
     public static DatabaseManager getDatabaseManager() {
@@ -33,7 +29,7 @@ public class FhmdbApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 
     @Override
@@ -43,5 +39,4 @@ public class FhmdbApplication extends Application {
         }
         super.stop();
     }
-
 }

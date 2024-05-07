@@ -16,6 +16,9 @@ public class Movie {
     private List<String> director;
     private int lengthInMinutes;
 
+    public Movie() {
+    }
+
 
     public Movie(String id, String title, String description, List<String> genres, int releaseYear, double rating, String imgUrl, List<String> mainCast, List<String> writers, List<String> director, int lengthInMinutes) {
         this.id = id;
@@ -78,6 +81,26 @@ public class Movie {
     // Setter für ID, falls benötigt
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public static List<Movie> initializeMovies() {
