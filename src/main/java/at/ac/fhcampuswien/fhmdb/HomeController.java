@@ -37,6 +37,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
+    @FXML
+    public JFXButton watchListButton;
+
     public ListView watchlistListView;
     @FXML
     private ComboBox<String> viewSelector;
@@ -83,7 +86,7 @@ public class HomeController implements Initializable {
             windowState = WindowState.WATCHLIST;
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
-                Scene scene = new Scene(loader.load());
+                Scene scene = new Scene(loader.load(), 890, 620);
                 Stage stage = (Stage) movieListView.getScene().getWindow();
                 scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
                 stage.setScene(scene);
@@ -100,7 +103,7 @@ public class HomeController implements Initializable {
             windowState = WindowState.HOME;
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-                Scene scene = new Scene(loader.load());
+                Scene scene = new Scene(loader.load(), 890, 620);
                 Stage stage = (Stage) movieListView.getScene().getWindow();
                 stage.setScene(scene);
             } catch (IOException e) {
@@ -141,16 +144,7 @@ public class HomeController implements Initializable {
 
         windowState = WindowState.HOME;
 
-        viewSelector.getItems().clear();
-        viewSelector.getItems().addAll("Alle Filme", "Watchlist");
-
-        viewSelector.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if ("Watchlist".equals(newSelection)) {
-                switchToWatchlist();
-            } else if ("Alle Filme".equals(newSelection)) {
-                switchToHome();
-            }
-        });
+        watchListButton.setOnAction(actionEvent -> switchToWatchlist());
 
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
         movieRepository = new MovieRepository(); // No parameters

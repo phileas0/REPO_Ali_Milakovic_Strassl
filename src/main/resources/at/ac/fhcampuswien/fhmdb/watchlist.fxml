@@ -4,9 +4,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
 <AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController" prefHeight="400.0" prefWidth="600.0">
     <VBox fx:id="watchlistVBox" spacing="10" layoutX="15" layoutY="15" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0">
     <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS"/>
-    <Button fx:id="switchToHomeButton" text="Home" />
+    <Button fx:id="switchToHomeButton" prefWidth="580.0" text="Home" onAction="#fromWatchListToHome"/>
+
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: black;">
+            <padding>
+                <Insets bottom="7.0" left="10.0" top="7.0" right="10.0"/>
+            </padding>
+            <children>
+                <Label style="-fx-background-color: F5C518;" text="FHMDb">
+                    <font>
+                        <Font name="Calibri Bold" size="24.0"/>
+                    </font>
+                </Label>
+                <Label styleClass="text-white" stylesheets="@styles.css" text="Your Movielist!"/>
+            </children>
+        </HBox>
+
 </VBox>
 </AnchorPane>

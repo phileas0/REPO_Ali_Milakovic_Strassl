@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
 import at.ac.fhcampuswien.fhmdb.Interface.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -85,22 +86,15 @@ public class WatchListController implements Initializable {
         watchlistDao.createIfNotExists(watchlistMovie);
     }
 
-    public void switchToHome(ActionEvent actionEvent) {
-        try {
-            // Load the home view FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-            Parent homeView = loader.load();
-
-            // Get the current stage from the event source which is a component in the current scene
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
-            // Set the scene to the home view
-            Scene scene = new Scene(homeView);
+    public void fromWatchListToHome() {
+        FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+        try{
+            Scene scene = new Scene(fxmlLoader.load(), 890, 620);
+            Stage stage = (Stage)watchlistVBox.getScene().getWindow();
             stage.setScene(scene);
-            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
-            // Optionally, you can add more sophisticated error handling and user feedback here.
         }
     }
 }

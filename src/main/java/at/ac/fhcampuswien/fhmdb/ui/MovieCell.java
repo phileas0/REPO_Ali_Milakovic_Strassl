@@ -64,6 +64,8 @@ public class MovieCell extends ListCell<Movie> {
             Movie item = getItem();
             if (item != null && onRemoveFromWatchlist != null) {
                 onRemoveFromWatchlist.onClick(item);
+                getListView().getItems().remove(item); // Remove the item from the ListView
+                getListView().refresh();
             }
         });
     }
