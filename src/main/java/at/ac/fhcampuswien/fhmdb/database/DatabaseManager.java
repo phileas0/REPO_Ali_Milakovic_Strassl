@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
     public static final String DB_URL = "jdbc:h2:./db/moviesdb";
-    public static final String user = "user";
-    public static final String password = "123";
+    public static final String user = "philly";
+    public static final String password = "0000";
     private static ConnectionSource connectionSource;
     private Dao<MovieEntity, Long> movieDao;
     public static Dao<WatchlistMovieEntity, Long> watchlistDao;
