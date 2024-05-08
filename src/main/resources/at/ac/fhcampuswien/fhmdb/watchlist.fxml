@@ -8,11 +8,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController" prefHeight="400.0" prefWidth="600.0">
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController" prefHeight="331.0" prefWidth="570.0" style="-fx-background-color: black;">
     <VBox fx:id="watchlistVBox" spacing="10" layoutX="15" layoutY="15" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-    <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS"/>
-    <Button fx:id="switchToHomeButton" prefWidth="580.0" text="Home" onAction="#fromWatchListToHome"/>
-
+        <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS"/>
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: black;">
             <padding>
                 <Insets bottom="7.0" left="10.0" top="7.0" right="10.0"/>
@@ -23,9 +21,11 @@
                         <Font name="Calibri Bold" size="24.0"/>
                     </font>
                 </Label>
-                <Label styleClass="text-white" stylesheets="@styles.css" text="Your Movielist!"/>
+                <Label styleClass="text-white" stylesheets="@styles.css" text="Your Watchlist"/>
+                <Button fx:id="switchToHomeButton" styleClass="background-yellow" stylesheets="@styles.css" text="Home" onAction="#fromWatchListToHome" />
             </children>
         </HBox>
-
-</VBox>
+    </VBox>
 </AnchorPane>
+
+

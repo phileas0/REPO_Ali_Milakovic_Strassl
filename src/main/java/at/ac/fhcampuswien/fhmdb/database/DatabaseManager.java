@@ -1,12 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class DatabaseManager {
@@ -17,16 +16,27 @@ public class DatabaseManager {
     private Dao<MovieEntity, Long> movieDao;
     public static Dao<WatchlistMovieEntity, Long> watchlistDao;
 
-
     private static DatabaseManager instance;
     private DatabaseManager(){
         try {
-            createConnectSource();
+            try {
+                createConnectSource();
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
             movieDao = DaoManager.createDao(connectionSource, MovieEntity.class);
             watchlistDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
-            createTables();
+            try {
+                createTables();
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
+            try {
+                throw new DatabaseException("Error initializing database: " + e.getMessage(), e);
+            } catch (DatabaseException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -35,17 +45,25 @@ public class DatabaseManager {
         return instance;
     }
 
-    public static void createConnectSource() throws SQLException {
-        connectionSource = new JdbcConnectionSource(DB_URL, user, password);
+    public static void createConnectSource() throws DatabaseException {
+        try {
+            connectionSource = new JdbcConnectionSource(DB_URL, user, password);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error connecting to database: " + e.getMessage(), e);
+        }
     }
 
     public ConnectionSource getConnectionSource() {
         return connectionSource;
     }
 
-    private static void createTables() throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, MovieEntity.class);
-        TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+    private static void createTables() throws DatabaseException {
+        try {
+            TableUtils.createTableIfNotExists(connectionSource, MovieEntity.class);
+            TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating tables: " + e.getMessage(), e);
+        }
     }
 
     public Dao<MovieEntity, Long> getMovieDao() {
@@ -57,13 +75,16 @@ public class DatabaseManager {
             try {
                 watchlistDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
             } catch (SQLException e) {
-                System.err.println("Error initializing DAO: " + e.getMessage());
+                try {
+                    throw new DatabaseException("Error initializing DAO: " + e.getMessage(), e);
+                } catch (DatabaseException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
         return watchlistDao;
     }
 
-    // Method to close the database connection
     public void closeConnection() {
         if (connectionSource != null) {
             try {

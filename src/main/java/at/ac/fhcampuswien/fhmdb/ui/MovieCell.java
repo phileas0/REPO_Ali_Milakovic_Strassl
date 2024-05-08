@@ -79,8 +79,6 @@ public class MovieCell extends ListCell<Movie> {
             setGraphic(null);
             getStyleClass().remove("movie-cell");
         } else {
-            // Debugging output to verify movie details
-            System.out.println("Updating cell with: " + movie.getTitle());
 
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());

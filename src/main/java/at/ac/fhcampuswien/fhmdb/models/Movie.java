@@ -35,7 +35,11 @@ public class Movie {
     }
 
     public String getTitle() {
-        return title + " (" + (String.valueOf(releaseYear)) + ")";
+        // Überprüfen, ob das Release-Jahr bereits im Titel enthalten ist
+        if (!title.contains("(" + releaseYear + ")")) {
+            return title + " (" + releaseYear + ")";
+        }
+        return title;
     }
 
     public String getTitleForTest() {

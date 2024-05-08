@@ -1,4 +1,5 @@
 package at.ac.fhcampuswien.fhmdb;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,14 +47,21 @@ public class MovieAPI {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+                try {
+                    throw new MovieAPIException("Failed to fetch movies: " + response);
+                } catch (MovieAPIException e) {
+                    throw new RuntimeException(e);
+                }
             }
             String jsonData = response.body().string();
             Movie[] moviesArray = gson.fromJson(jsonData, Movie[].class);
             return List.of(moviesArray);
         } catch (IOException e) {
-            System.err.println("Error fetching movies: " + e.getMessage());
-            return new ArrayList<>(); // Return an empty list on error
+            try {
+                throw new MovieAPIException("Network error while fetching movies: " + e.getMessage(), e);
+            } catch (MovieAPIException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
