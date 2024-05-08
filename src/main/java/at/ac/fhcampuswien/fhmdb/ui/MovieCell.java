@@ -33,17 +33,27 @@ public class MovieCell extends ListCell<Movie> {
 
     private ClickEventHandler<Movie> onAddToWatchlist;
     private ClickEventHandler<Movie> onRemoveFromWatchlist;
+    private boolean isWatchlistView;
 
-    public MovieCell(WatchlistRepository watchlistRepo, ClickEventHandler<Movie> onAddToWatchlist, ClickEventHandler<Movie> onRemoveFromWatchlist) {
+    public MovieCell(WatchlistRepository watchlistRepo, ClickEventHandler<Movie> onAddToWatchlist, ClickEventHandler<Movie> onRemoveFromWatchlist, boolean isWatchlistView) {
         super();
         this.watchlistRepo = watchlistRepo;
         this.onAddToWatchlist = onAddToWatchlist;
         this.onRemoveFromWatchlist = onRemoveFromWatchlist;
+        this.isWatchlistView = isWatchlistView;
         initializeCellComponents();
     }
 
     private void initializeCellComponents() {
-        layout.getChildren().addAll(addToWatchlistButton, removeFromWatchlistButton);
+        if (!isWatchlistView) {
+            layout.getChildren().add(addToWatchlistButton);
+        } else {
+            layout.getChildren().add(removeFromWatchlistButton);
+        }
+        setupButtonActions();
+    }
+
+    private void setupButtonActions() {
         addToWatchlistButton.setOnAction(event -> {
             Movie item = getItem();
             if (item != null && onAddToWatchlist != null) {
@@ -99,4 +109,3 @@ public class MovieCell extends ListCell<Movie> {
     }
 
 }
-

@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.HomeController;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 
@@ -10,8 +11,7 @@ public class WatchlistRepository {
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
 
     public WatchlistRepository() {
-        DatabaseManager.getDatabaseManager();
-        this.watchlistDao = DatabaseManager.getWatchlistDao();
+        this.watchlistDao = DatabaseManager.getDatabaseManager().getWatchlistDao();
     }
 
     // Alle Einträge der Watchlist abrufen

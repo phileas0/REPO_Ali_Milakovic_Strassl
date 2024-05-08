@@ -107,5 +107,4 @@ public class MovieEntity {
         movie.setRating(Double.parseDouble(String.valueOf(movieEntity.getRating())));
         return movie;
     }
-
 }

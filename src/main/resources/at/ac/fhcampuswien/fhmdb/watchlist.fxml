@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController">    <VBox fx:id="watchlistVBox" layoutX="15" layoutY="15" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-        <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS" />
-        <Button fx:id="switchToHomeButton" prefWidth="580.0" onAction="#loadHomeView" />
-    </VBox>
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController" prefHeight="400.0" prefWidth="600.0">
+    <VBox fx:id="watchlistVBox" spacing="10" layoutX="15" layoutY="15" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+    <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS"/>
+    <Button fx:id="switchToHomeButton" text="Home" />
+</VBox>
 </AnchorPane>

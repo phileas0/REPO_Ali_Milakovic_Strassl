@@ -27,7 +27,14 @@
             </font>
          </Label>
          <Label styleClass="text-white" stylesheets="@styles.css" text="Welcome to FHMDb!"/>
-         <JFXButton fx:id="watchlistBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Watchlist" />
+         <ComboBox fx:id="viewSelector" prefWidth="150.0" prefHeight="25.0" onAction="#handleViewSelection">
+            <items>
+               <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Alle Filme"/>
+                  <String fx:value="Watchlist"/>
+               </FXCollections>
+            </items>
+         </ComboBox>
       </children>
    </HBox>
 

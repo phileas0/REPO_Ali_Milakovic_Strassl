@@ -1,4 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -9,6 +11,7 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +61,25 @@ public class MovieAPI {
     }
 
     public static List<Movie> fetchAllMovies() {
-        return fetchMovies(null, null, null, null);
-    }
-}
+        MovieRepository movieRepository = new MovieRepository();
+        try {
+            List<Movie> cachedMovies = movieRepository.findAllMovies();
+            if (!cachedMovies.isEmpty()) {
+                return cachedMovies;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving cached movies: " + e.getMessage());
+        }
+
+        // Keine Filme in der Datenbank oder Fehler beim Zugriff
+        List<Movie> fetchedMovies = fetchMovies(null, null, null, null);
+        fetchedMovies.forEach(movie -> {
+            try {
+                MovieEntity movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
+                movieRepository.createOrUpdate(movieEntity);
+            } catch (SQLException e) {
+                System.err.println("Error caching movies: " + e.getMessage());
+            }
+        });
+        return fetchedMovies;
+    }}

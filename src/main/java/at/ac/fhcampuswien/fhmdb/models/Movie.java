@@ -108,4 +108,9 @@ public class Movie {
 
         return movies;
     }
+
+    @Override
+    public String toString() {
+        return getTitle() + " - " + getDescription();
+    }
 }

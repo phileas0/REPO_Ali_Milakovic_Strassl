@@ -1,11 +1,13 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MovieRepository {
     private Dao<MovieEntity, Long> movieDao;
@@ -36,5 +38,12 @@ public class MovieRepository {
         QueryBuilder<MovieEntity, Long> queryBuilder = movieDao.queryBuilder();
         queryBuilder.where().eq("apiId", apiId);
         return movieDao.queryForFirst(queryBuilder.prepare());
+    }
+
+    public List<Movie> findAllMovies() throws SQLException {
+        List<MovieEntity> entities = movieDao.queryForAll();
+        return entities.stream()
+                .map(MovieEntity::convertToMovie)
+                .collect(Collectors.toList());
     }
 }

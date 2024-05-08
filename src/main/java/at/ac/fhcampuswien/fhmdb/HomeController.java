@@ -58,7 +58,6 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton sortBtn;
-    public JFXButton watchlistBtn;
 
     public List<Movie> allMovies = Movie.initializeMovies();
 
@@ -86,6 +85,7 @@ public class HomeController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
                 Scene scene = new Scene(loader.load());
                 Stage stage = (Stage) movieListView.getScene().getWindow();
+                scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
                 stage.setScene(scene);
                 WatchListController watchListController = loader.getController();
                 watchListController.loadWatchlist(); // Ensure the watchlist is loaded
@@ -95,6 +95,19 @@ public class HomeController implements Initializable {
         }
     }
 
+    public void switchToHome() {
+        if (windowState != WindowState.HOME) {
+            windowState = WindowState.HOME;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) movieListView.getScene().getWindow();
+                stage.setScene(scene);
+            } catch (IOException e) {
+                e.printStackTrace(); // Consider a more user-friendly error handling
+            }
+        }
+    }
 
     private ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
         try {
@@ -128,9 +141,18 @@ public class HomeController implements Initializable {
 
         windowState = WindowState.HOME;
 
-        watchlistBtn.setOnAction(actionEvent -> switchToWatchlist());
+        viewSelector.getItems().clear();
+        viewSelector.getItems().addAll("Alle Filme", "Watchlist");
 
-        movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
+        viewSelector.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if ("Watchlist".equals(newSelection)) {
+                switchToWatchlist();
+            } else if ("Alle Filme".equals(newSelection)) {
+                switchToHome();
+            }
+        });
+
+        movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
         movieRepository = new MovieRepository(); // No parameters
         watchlistRepository = new WatchlistRepository(); // No parameters
 
@@ -141,14 +163,14 @@ public class HomeController implements Initializable {
 
             // Initialisiere das Repository mit der Datenbankverbindung
             watchlistRepository = new WatchlistRepository();
-            movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
+            movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
         } catch (SQLException e) {
             e.printStackTrace();  // Füge eine angemessene Fehlerbehandlung hinzu
         }
 
 
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler));
+        movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
 
         searchBtn.setOnAction(actionEvent -> applyFilterAndDisplayResults());
         searchField.setOnKeyPressed(keyEvent -> {
@@ -172,7 +194,7 @@ public class HomeController implements Initializable {
     }
 
 
-    public void loadMovies() {
+    private void loadMovies() {
         Platform.runLater(() -> {
             observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
             prepareAndPopulateFilters();

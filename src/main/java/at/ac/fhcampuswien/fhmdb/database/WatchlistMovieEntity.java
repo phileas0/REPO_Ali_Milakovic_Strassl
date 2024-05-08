@@ -8,7 +8,7 @@ public class WatchlistMovieEntity {
     @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "movie_id")
     private MovieEntity movie;
 
     @DatabaseField
