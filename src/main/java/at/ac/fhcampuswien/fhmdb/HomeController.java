@@ -95,19 +95,6 @@ public class HomeController implements Initializable {
         }
     }
 
-    public void switchToHome() {
-        if (windowState != WindowState.HOME) {
-            windowState = WindowState.HOME;
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-                Scene scene = new Scene(loader.load());
-                Stage stage = (Stage) movieListView.getScene().getWindow();
-                stage.setScene(scene);
-            } catch (IOException e) {
-                e.printStackTrace(); // Consider a more user-friendly error handling
-            }
-        }
-    }
 
     private ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
         try {
@@ -185,7 +172,7 @@ public class HomeController implements Initializable {
     }
 
 
-    private void loadMovies() {
+    public void loadMovies() {
         Platform.runLater(() -> {
             observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
             prepareAndPopulateFilters();

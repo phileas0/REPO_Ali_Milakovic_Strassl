@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.FhmdbApplication;
+import at.ac.fhcampuswien.fhmdb.HomeController;
 import at.ac.fhcampuswien.fhmdb.Interface.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -16,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -36,7 +39,11 @@ public class WatchListController implements Initializable {
     @FXML
     public ListView<Movie> watchlistListView;// Ensure this is set to handle Movie objects
 
+    @FXML
     public Button switchToHomeButton;
+
+    @FXML
+    private AnchorPane rootPane;
 
     private WatchlistRepository watchlistRepository;
     private ObservableList<Movie> observableWatchlistMovies = FXCollections.observableArrayList();
@@ -76,22 +83,15 @@ public class WatchListController implements Initializable {
         watchlistDao.createIfNotExists(watchlistMovie);
     }
 
-    public void switchToHome(ActionEvent actionEvent) {
-        try {
-            // Load the home view FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/home-view.fxml"));
-            Parent homeView = loader.load();
-
-            // Get the current stage from the event source which is a component in the current scene
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
-            // Set the scene to the home view
-            Scene scene = new Scene(homeView);
+    public void loadHomeView() {
+        FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
+        try{
+            Scene scene = new Scene(fxmlLoader.load(), 890, 620);
+            Stage stage = (Stage)watchlistVBox.getScene().getWindow();
             stage.setScene(scene);
-            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
-            // Optionally, you can add more sophisticated error handling and user feedback here.
         }
     }
 }

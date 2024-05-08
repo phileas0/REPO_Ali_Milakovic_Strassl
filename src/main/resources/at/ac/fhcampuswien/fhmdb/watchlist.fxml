@@ -5,6 +5,6 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.ui.WatchListController">    <VBox fx:id="watchlistVBox" layoutX="15" layoutY="15" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <ListView fx:id="watchlistListView" VBox.vgrow="ALWAYS" />
-        <Button fx:id="switchToHomeButton" prefWidth="580.0" text="Home" />
+        <Button fx:id="switchToHomeButton" prefWidth="580.0" onAction="#loadHomeView" />
     </VBox>
 </AnchorPane>
