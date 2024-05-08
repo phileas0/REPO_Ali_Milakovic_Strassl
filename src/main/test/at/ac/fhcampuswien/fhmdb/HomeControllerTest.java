@@ -1,8 +1,13 @@
 package at.ac.fhcampuswien.fhmdb;
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.collections.FXCollections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -149,5 +154,7 @@ class HomeControllerTest {
         assertEquals(1, filteredMovies.size());
         assertEquals(2005, filteredMovies.get(0).getReleaseYear());
     }
+    
+
 
 }

@@ -70,7 +70,7 @@ public class HomeController implements Initializable {
 
     private ConnectionSource connectionSource;
 
-    private MovieRepository movieRepository;
+    MovieRepository movieRepository;
 
     private WatchlistRepository watchlistRepository;
 
@@ -114,7 +114,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    private ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
+    ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
         try {
             MovieEntity movieEntity = movieRepository.findByApiId(movie.getId());
             if (movieEntity == null) {

@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb.database;
 import at.ac.fhcampuswien.fhmdb.HomeController;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,12 +23,20 @@ public class WatchlistRepository {
     // Einen Film zur Watchlist hinzufügen
     public void addToWatchlist(WatchlistMovieEntity watchlistMovie) throws SQLException {
         try {
-            watchlistDao.createIfNotExists(watchlistMovie);
-            System.out.println("Added to watchlist: " + watchlistMovie.getMovie().getTitle());
+            if(!isMovieInWatchlist(watchlistMovie.getApiId())) {
+                watchlistDao.createIfNotExists(watchlistMovie);
+                System.out.println("Added to watchlist: " + watchlistMovie.getMovie().getTitle());
+            } else System.out.println("Movie already in watchlist");
         } catch (SQLException e) {
             System.err.println("Error adding to watchlist: " + e.getMessage());
             throw e;
         }
+    }
+
+    public boolean isMovieInWatchlist(String apiId) throws SQLException {
+        QueryBuilder<WatchlistMovieEntity, Long> queryBuilder = watchlistDao.queryBuilder();
+        queryBuilder.where().eq("apiId", apiId);
+        return queryBuilder.queryForFirst() != null;
     }
 
     // Einen Eintrag aus der Watchlist löschen
