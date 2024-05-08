@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MovieRepository {
-    private Dao<MovieEntity, Long> movieDao;
+    private static Dao<MovieEntity, Long> movieDao;
 
     public MovieRepository() {
         this.movieDao = DatabaseManager.getDatabaseManager().getMovieDao();
@@ -36,5 +36,15 @@ public class MovieRepository {
         QueryBuilder<MovieEntity, Long> queryBuilder = movieDao.queryBuilder();
         queryBuilder.where().eq("apiId", apiId);
         return movieDao.queryForFirst(queryBuilder.prepare());
+    }
+
+    public static List<MovieEntity> findAll() throws SQLException {
+        try {
+            // Verwende movieDao, um alle Filme aus der Datenbank abzufragen
+            return movieDao.queryForAll();
+        } catch (SQLException e) {
+            System.err.println("Error fetching all movies from database: " + e.getMessage());
+            throw e; // Weiterleiten der SQLException an den Aufrufer
+        }
     }
 }

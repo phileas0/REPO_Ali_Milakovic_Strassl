@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 
 public class HomeController implements Initializable {
     @FXML
@@ -146,6 +148,8 @@ public class HomeController implements Initializable {
 
         watchListButton.setOnAction(actionEvent -> switchToWatchlist());
 
+        cacheMoviesAtStartup();
+
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
         movieRepository = new MovieRepository(); // No parameters
         watchlistRepository = new WatchlistRepository(); // No parameters
@@ -190,8 +194,21 @@ public class HomeController implements Initializable {
 
     private void loadMovies() {
         Platform.runLater(() -> {
-            observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
-            prepareAndPopulateFilters();
+            try {
+                observableMovies.setAll(MovieAPI.fetchAllMovies()); // Holt alle Filme ohne Filter
+                prepareAndPopulateFilters();
+            } catch (Exception e) {
+                // Lade Filme aus der Datenbank, wenn die API nicht erreichbar ist
+                try {
+                    List<MovieEntity> moviesFromDB = new MovieRepository().findAll();
+                    List<Movie> cachedMovies = moviesFromDB.stream().map(MovieEntity::convertToMovie).collect(Collectors.toList());
+                    observableMovies.setAll(cachedMovies);
+                    prepareAndPopulateFilters();
+                } catch (SQLException sqlException) {
+                    // Zeige Fehlermeldung im UI
+                    sqlException.printStackTrace();
+                }
+            }
         });
 
     }
@@ -346,4 +363,27 @@ public class HomeController implements Initializable {
             loadMovies();  // Methode, um alle Filme zu laden
         }
     }
+
+    private void cacheMoviesAtStartup() {
+        try {
+            List<Movie> moviesFromAPI = MovieAPI.fetchAllMovies();
+            MovieRepository movieRepository = new MovieRepository();
+            for (Movie movie : moviesFromAPI) {
+                MovieEntity movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
+                movieRepository.createOrUpdate(movieEntity);
+            }
+        } catch (SQLException e) {
+            // Handle Exception, vielleicht eine Fehlermeldung im UI anzeigen
+            e.printStackTrace();
+        }
+    }
+
+    public static void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
 }

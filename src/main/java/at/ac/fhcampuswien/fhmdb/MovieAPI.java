@@ -1,8 +1,12 @@
 package at.ac.fhcampuswien.fhmdb;
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -10,8 +14,12 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static at.ac.fhcampuswien.fhmdb.HomeController.showAlert;
 
 public class MovieAPI {
     private static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
@@ -60,8 +68,24 @@ public class MovieAPI {
             try {
                 throw new MovieAPIException("Network error while fetching movies: " + e.getMessage(), e);
             } catch (MovieAPIException ex) {
-                throw new RuntimeException(ex);
+                Platform.runLater(() -> showAlert("Network Error", "Unable to fetch movies due to a network error. Using cached data."));
+                return functionWhenNoInternet();
             }
+        }
+    }
+
+
+
+
+    private static List<Movie> functionWhenNoInternet() {
+        try {
+            // Hier initialisieren wir das Repository, um aus der Datenbank zu lesen
+            MovieRepository movieRepository = new MovieRepository();
+            List<MovieEntity> movieEntities = movieRepository.findAll();
+            return movieEntities.stream().map(MovieEntity::convertToMovie).collect(Collectors.toList());
+        } catch (SQLException e) {
+            System.err.println("Error accessing local database: " + e.getMessage());
+            return new ArrayList<>(); // Return an empty list on database access error
         }
     }
 
