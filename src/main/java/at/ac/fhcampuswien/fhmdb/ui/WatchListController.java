@@ -82,9 +82,6 @@ public class WatchListController implements Initializable {
         }
     }
 
-    public void addToWatchlist(WatchlistMovieEntity watchlistMovie) throws SQLException {
-        watchlistDao.createIfNotExists(watchlistMovie);
-    }
 
     public void fromWatchListToHome() {
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));

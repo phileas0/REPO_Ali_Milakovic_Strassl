@@ -100,19 +100,6 @@ public class HomeController implements Initializable {
         }
     }
 
-    public void switchToHome() {
-        if (windowState != WindowState.HOME) {
-            windowState = WindowState.HOME;
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
-                Scene scene = new Scene(loader.load(), 890, 620);
-                Stage stage = (Stage) movieListView.getScene().getWindow();
-                stage.setScene(scene);
-            } catch (IOException e) {
-                e.printStackTrace(); // Consider a more user-friendly error handling
-            }
-        }
-    }
 
     ClickEventHandler<Movie> addToWatchlistHandler = movie -> {
         try {
@@ -355,14 +342,6 @@ public class HomeController implements Initializable {
                 .collect(Collectors.toList());
     }
 
-    public void handleViewSelection() {
-        String selectedView = viewSelector.getSelectionModel().getSelectedItem();
-        if ("Watchlist".equals(selectedView)) {
-            switchToWatchlist();
-        } else if ("Alle Filme".equals(selectedView)) {
-            loadMovies();  // Methode, um alle Filme zu laden
-        }
-    }
 
     private void cacheMoviesAtStartup() {
         try {

@@ -23,10 +23,8 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
-    private final Label releaseYear = new Label();
     private final Label rating = new Label();
     private final VBox layout = new VBox(title, detail, genre);
-    private final VBox secondLayout = new VBox();
     private WatchlistRepository watchlistRepo; // Repository-Instanz
     private Button addToWatchlistButton = new Button("Add to Watchlist");
     private Button removeFromWatchlistButton = new Button("Remove");

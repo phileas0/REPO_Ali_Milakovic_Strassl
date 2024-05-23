@@ -154,7 +154,6 @@ class HomeControllerTest {
         assertEquals(1, filteredMovies.size());
         assertEquals(2005, filteredMovies.get(0).getReleaseYear());
     }
-    
 
 
 }
