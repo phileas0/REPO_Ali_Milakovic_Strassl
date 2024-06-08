@@ -80,7 +80,7 @@ public class MovieAPI {
     private static List<Movie> functionWhenNoInternet() {
         try {
             // Hier initialisieren wir das Repository, um aus der Datenbank zu lesen
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             List<MovieEntity> movieEntities = movieRepository.findAll();
             return movieEntities.stream().map(MovieEntity::convertToMovie).collect(Collectors.toList());
         } catch (SQLException e) {

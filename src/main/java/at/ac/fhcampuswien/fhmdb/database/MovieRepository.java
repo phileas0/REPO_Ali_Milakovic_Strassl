@@ -8,10 +8,23 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MovieRepository {
+    private static MovieRepository instance;
     private static Dao<MovieEntity, Long> movieDao;
 
-    public MovieRepository() {
+    private MovieRepository() {
         this.movieDao = DatabaseManager.getDatabaseManager().getMovieDao();
+    }
+
+    // Public static method to get the instance
+    public static MovieRepository getInstance() {
+        if (instance == null) {
+            synchronized (MovieRepository.class) { // Thread-safe singleton
+                if (instance == null) {
+                    instance = new MovieRepository();
+                }
+            }
+        }
+        return instance;
     }
 
     public void createOrUpdate(MovieEntity movieEntity) throws SQLException {

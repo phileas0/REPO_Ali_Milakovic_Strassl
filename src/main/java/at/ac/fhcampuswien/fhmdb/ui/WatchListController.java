@@ -44,7 +44,7 @@ public class WatchListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        watchlistRepository = new WatchlistRepository();
+        watchlistRepository = WatchlistRepository.getInstance();
         loadWatchlist();
 
         ClickEventHandler<Movie> addToWatchlistHandler = null;

@@ -9,10 +9,22 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class WatchlistRepository {
+    private static WatchlistRepository instance;
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
 
-    public WatchlistRepository() {
+    private WatchlistRepository() {
         this.watchlistDao = DatabaseManager.getDatabaseManager().getWatchlistDao();
+    }
+
+    public static WatchlistRepository getInstance() {
+        if (instance == null) {
+            synchronized (WatchlistRepository.class) { // Thread-safe singleton
+                if (instance == null) {
+                    instance = new WatchlistRepository();
+                }
+            }
+        }
+        return instance;
     }
 
     // Alle Einträge der Watchlist abrufen

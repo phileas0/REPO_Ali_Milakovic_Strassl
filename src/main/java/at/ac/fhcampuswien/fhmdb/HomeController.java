@@ -142,8 +142,8 @@ public class HomeController implements Initializable {
         cacheMoviesAtStartup();
 
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
-        movieRepository = new MovieRepository(); // No parameters
-        watchlistRepository = new WatchlistRepository(); // No parameters
+        movieRepository = MovieRepository.getInstance();
+        watchlistRepository = WatchlistRepository.getInstance();
 
         try {
             // Beispiel für eine H2 In-Memory Datenbank
@@ -151,7 +151,6 @@ public class HomeController implements Initializable {
             connectionSource = new JdbcConnectionSource(databaseUrl);
 
             // Initialisiere das Repository mit der Datenbankverbindung
-            watchlistRepository = new WatchlistRepository();
             movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
         } catch (SQLException e) {
             e.printStackTrace();  // Füge eine angemessene Fehlerbehandlung hinzu
@@ -193,7 +192,7 @@ public class HomeController implements Initializable {
             } catch (Exception e) {
                 // Lade Filme aus der Datenbank, wenn die API nicht erreichbar ist
                 try {
-                    List<MovieEntity> moviesFromDB = new MovieRepository().findAll();
+                    List<MovieEntity> moviesFromDB = MovieRepository.findAll();
                     List<Movie> cachedMovies = moviesFromDB.stream().map(MovieEntity::convertToMovie).collect(Collectors.toList());
                     observableMovies.setAll(cachedMovies);
                     prepareAndPopulateFilters();
@@ -355,7 +354,7 @@ public class HomeController implements Initializable {
     private void cacheMoviesAtStartup() {
         try {
             List<Movie> moviesFromAPI = MovieAPI.fetchAllMovies();
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             for (Movie movie : moviesFromAPI) {
                 MovieEntity movieEntity = MovieEntity.convertMovieToMovieEntity(movie);
                 movieRepository.createOrUpdate(movieEntity);
