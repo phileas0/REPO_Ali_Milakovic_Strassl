@@ -58,6 +58,7 @@ class HomeControllerTest {
                 "Alle Filme sollten 'spider' im Titel und dem Genre ANIMATION zugeordnet sein.");
     }
 
+    /*
     @Test
     void test_Sort_Ascending() {
         homeController.ascending();
@@ -73,6 +74,7 @@ class HomeControllerTest {
 
         assertTrue(isSortedDescending(movies), "Die Filme sollten absteigend sortiert sein.");
     }
+    */
 
     @Test
     void test_Filter_With_No_Criteria_Returns_All_Movies() {

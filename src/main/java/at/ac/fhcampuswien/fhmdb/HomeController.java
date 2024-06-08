@@ -10,6 +10,9 @@ import at.ac.fhcampuswien.fhmdb.database.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.sorting.AscendingState;
+import at.ac.fhcampuswien.fhmdb.sorting.DescendingState;
+import at.ac.fhcampuswien.fhmdb.sorting.MovieSortManager;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.WatchListController;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -69,6 +72,7 @@ public class HomeController implements Initializable {
     final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
     private ConnectionSource connectionSource;
+    private MovieSortManager sortManager = new MovieSortManager();
 
     MovieRepository movieRepository;
 
@@ -164,6 +168,7 @@ public class HomeController implements Initializable {
             }
         });
 
+        /*
         sortBtn.setOnAction(actionEvent -> {
             if (sortBtn.getText().equals("Sort (asc)")) {
                 descending();
@@ -174,6 +179,7 @@ public class HomeController implements Initializable {
             }
             movieListView.refresh();
         });
+         */
 
         loadMovies();
     }
@@ -278,6 +284,7 @@ public class HomeController implements Initializable {
         List<Movie> filteredMovies = MovieAPI.fetchMovies(query, genre, yearFilter, ratingFilter);
         Platform.runLater(() -> {
             observableMovies.setAll(filteredMovies);
+            sortManager.sortMovies(observableMovies);
             movieListView.refresh();
         });
     }
@@ -305,6 +312,7 @@ public class HomeController implements Initializable {
     }
 
 
+    /*
     public void ascending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie1.getTitle().compareToIgnoreCase(movie2.getTitle()));
     }
@@ -312,6 +320,7 @@ public class HomeController implements Initializable {
     public void descending() {
         FXCollections.sort(observableMovies, (movie1, movie2) -> movie2.getTitle().compareToIgnoreCase(movie1.getTitle()));
     }
+     */
 
     public String getMostPopularActor(List<Movie> movies) {
         return movies.stream()
@@ -365,4 +374,13 @@ public class HomeController implements Initializable {
         alert.showAndWait();
     }
 
+    public void onSortAscendingClicked() {
+        sortManager.setSortState(new AscendingState());
+        sortManager.sortMovies(observableMovies);
+    }
+
+    public void onSortDescendingClicked() {
+        sortManager.setSortState(new DescendingState());
+        sortManager.sortMovies(observableMovies);
+    }
 }
