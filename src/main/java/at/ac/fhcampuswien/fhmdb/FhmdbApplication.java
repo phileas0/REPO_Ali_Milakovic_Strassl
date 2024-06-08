@@ -15,13 +15,14 @@ public class FhmdbApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         initializeDatabase();
-        WatchlistRepository watchlistRepo = WatchlistRepository.getInstance(); // Observer
-        HomeController homeController = new HomeController();
-        watchlistRepo.attach(homeController);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+        fxmlLoader.setControllerFactory(new ControllerFactory());
         Scene scene = new Scene(fxmlLoader.load(), 890, 620);
         stage.setScene(scene);
         stage.show();
+
+        HomeController homeController = (HomeController) fxmlLoader.getController();
+        WatchlistRepository.getInstance().attach(homeController);
     }
 
     private void initializeDatabase() {

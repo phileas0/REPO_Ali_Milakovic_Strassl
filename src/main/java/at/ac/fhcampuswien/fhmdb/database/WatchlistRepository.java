@@ -1,6 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
-import at.ac.fhcampuswien.fhmdb.HomeController;
 import at.ac.fhcampuswien.fhmdb.Interface.Observable;
 import at.ac.fhcampuswien.fhmdb.Interface.Observer;
 import com.j256.ormlite.dao.Dao;

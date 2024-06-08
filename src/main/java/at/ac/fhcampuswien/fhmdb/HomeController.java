@@ -86,6 +86,7 @@ public class HomeController implements Initializable, Observer{
     private WindowState windowState = WindowState.HOME;
 
     public HomeController() {
+        System.out.println("HomeController instance created: " + this);
     }
 
     @Override
