@@ -44,7 +44,7 @@ public class MovieAPI {
         if (ratingFrom != null && !ratingFrom.isEmpty() && !ratingFrom.equals("ALL RATINGS")) {
             urlBuilder.addQueryParameter("ratingFrom", ratingFrom);
         }
-
+        System.out.println(urlBuilder.build());
         return urlBuilder.build().toString();
     }
 

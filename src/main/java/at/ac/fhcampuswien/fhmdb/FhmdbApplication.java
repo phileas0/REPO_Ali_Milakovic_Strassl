@@ -21,7 +21,7 @@ public class FhmdbApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        HomeController homeController = (HomeController) fxmlLoader.getController();
+        HomeController homeController = fxmlLoader.getController();
         WatchlistRepository.getInstance().attach(homeController);
     }
 
