@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.Interface.Observer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -41,7 +42,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import at.ac.fhcampuswien.fhmdb.exceptions.MovieAPIException;
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, Observer{
     @FXML
     public JFXButton watchListButton;
 
@@ -85,6 +86,13 @@ public class HomeController implements Initializable {
     private WindowState windowState = WindowState.HOME;
 
     public HomeController() {
+    }
+
+    @Override
+    public void update(String message) {
+        Platform.runLater(() -> {
+            showWatchlistAlert(message);
+        });
     }
 
     public void switchToWatchlist() {
@@ -134,11 +142,8 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         windowState = WindowState.HOME;
-
         watchListButton.setOnAction(actionEvent -> switchToWatchlist());
-
         cacheMoviesAtStartup();
 
         movieListView.setCellFactory(lv -> new MovieCell(watchlistRepository, addToWatchlistHandler, removeFromWatchlistHandler, false));  // false for home screen
@@ -371,6 +376,14 @@ public class HomeController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void showWatchlistAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Watchlist Update");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait(); // Show the alert and wait for the user to close it
     }
 
     public void onSortAscendingClicked() {
